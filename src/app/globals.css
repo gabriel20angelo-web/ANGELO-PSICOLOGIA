@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:wght@400;500;600;700&family=Courier+Prime:ital@0;1&display=swap');
+
+/* ====================== BASE ====================== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  background: #0E0C0A;
+  color: #B8AD9E;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: #B48C50;
+  color: #0E0C0A;
+}
+
+/* ====================== GRAIN OVERLAY ====================== */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* ====================== SCROLLBAR ====================== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0E0C0A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(180, 140, 80, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(180, 140, 80, 0.35);
+}
+
+/* ====================== UTILITIES ====================== */
+.gold-gradient {
+  background: linear-gradient(90deg, transparent, rgba(180, 140, 80, 0.22), transparent);
+}
+
+.section-border-t {
+  border-top: 1px solid rgba(180, 140, 80, 0.1);
+}
+
+.section-border-b {
+  border-bottom: 1px solid rgba(180, 140, 80, 0.1);
+}
+
+/* Ambient glow effect */
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(180, 140, 80, 0.04) 0%, transparent 65%);
+}
+
+/* ====================== TYPOGRAPHY REFINEMENTS ====================== */
+.font-serif {
+  font-family: 'DM Serif Display', Georgia, serif;
+}
+
+.font-body {
+  font-family: 'Libre Baskerville', Georgia, serif;
+}
+
+.font-sans {
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+}
+
+.font-mono {
+  font-family: 'Courier Prime', monospace;
+}
+
+/* ====================== LINK & BUTTON BASE ====================== */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #B48C50;
+  transition: width 0.3s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
