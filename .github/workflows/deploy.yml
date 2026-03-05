@@ -1,4 +1,3 @@
- 
 name: Deploy to GitHub Pages
 on:
   push:
@@ -23,8 +22,8 @@ jobs:
       - uses: actions/deploy-pages@v4
 ```
 
-Depois:
+Salva. Depois:
 ```
 git add .
-git commit -m "adiciona deploy automatico"
+git commit -m "corrige workflow"
 git push
