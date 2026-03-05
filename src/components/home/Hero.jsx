@@ -1,9 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { img } from '@/lib/basepath';
 
 export default function Hero() {
+  const [photoError, setPhotoError] = useState(false);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 md:px-12 overflow-hidden">
       {/* Ambient light */}
@@ -88,25 +92,25 @@ export default function Hero() {
           <div className="relative w-full aspect-[3/4]">
             {/* ========== SUA FOTO: coloque o arquivo em public/images/angelo.jpg ========== */}
             <div className="w-full h-full bg-bg-card border border-border-subtle relative overflow-hidden">
-              <img
-                src="/images/angelo.jpg"
-                alt="Ângelo"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-              <div className="w-full h-full flex-col items-center justify-center gap-3 absolute inset-0" style={{ display: 'none' }}>
-                <svg className="w-10 h-10 text-text-dim opacity-25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <path d="M21 15l-5-5L5 21" />
-                </svg>
-                <span className="font-sans text-[0.65rem] tracking-[0.2em] uppercase text-text-dim opacity-35">
-                  Sua foto aqui
-                </span>
-              </div>
+              {!photoError ? (
+                <img
+                  src={img('/images/angelo.jpg')}
+                  alt="Ângelo"
+                  className="w-full h-full object-cover"
+                  onError={() => setPhotoError(true)}
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center gap-3">
+                  <svg className="w-10 h-10 text-text-dim opacity-25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </svg>
+                  <span className="font-sans text-[0.65rem] tracking-[0.2em] uppercase text-text-dim opacity-35">
+                    Sua foto aqui
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Decorative fragments */}

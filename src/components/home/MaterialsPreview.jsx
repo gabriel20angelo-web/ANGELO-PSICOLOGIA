@@ -6,6 +6,7 @@ import Link from 'next/link';
 import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger, scaleIn } from '@/lib/constants';
 import { materials, contentTypeLabels } from '@/data/materials';
+import { img } from '@/lib/basepath';
 
 const previewItems = materials.filter((m) => m.available).slice(0, 3);
 
@@ -51,7 +52,7 @@ export default function MaterialsPreview() {
                 {/* Image */}
                 <div className="w-full aspect-[4/3] bg-bg border border-border-subtle mb-5 overflow-hidden">
                   {item.image ? (
-                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                    <img src={img(item.image)} alt={item.title} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <span className="font-sans text-[0.6rem] text-text-dim opacity-30 tracking-[0.15em] uppercase">Imagem</span>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { contentTypeLabels } from '@/data/materials';
+import { img } from '@/lib/basepath';
 
 function ContentBadge({ contentType }) {
   const info = contentTypeLabels[contentType];
@@ -63,7 +64,7 @@ export function MaterialCardFull({ material }) {
         {/* Image */}
         <div className="w-full sm:w-48 md:w-52 flex-shrink-0 aspect-[3/4] sm:aspect-auto bg-bg border-b sm:border-b-0 sm:border-r border-border-subtle overflow-hidden min-h-[200px]">
           {material.image ? (
-            <img src={material.image} alt={material.title} className="w-full h-full object-cover" />
+            <img src={img(material.image)} alt={material.title} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <span className="font-sans text-[0.55rem] text-text-dim opacity-30 tracking-[0.15em] uppercase">Capa</span>
@@ -218,7 +219,7 @@ export function MaterialCardCompact({ material }) {
       {/* Image */}
       <div className="w-full aspect-[16/9] bg-bg border-b border-border-subtle overflow-hidden">
         {material.image ? (
-          <img src={material.image} alt={material.title} className="w-full h-full object-cover" />
+          <img src={img(material.image)} alt={material.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <span className="font-sans text-[0.55rem] text-text-dim opacity-30 tracking-[0.15em] uppercase">Capa</span>
