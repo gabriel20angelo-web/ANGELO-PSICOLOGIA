@@ -20,10 +20,3 @@ jobs:
         with:
           path: ./out
       - uses: actions/deploy-pages@v4
-```
-
-Salva. Depois:
-```
-git add .
-git commit -m "corrige workflow"
-git push
