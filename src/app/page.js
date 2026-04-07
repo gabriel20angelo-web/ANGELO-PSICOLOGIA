@@ -3,6 +3,9 @@ import Footer from '@/components/Footer';
 import Hero from '@/components/home/Hero';
 import About from '@/components/home/About';
 import MaterialsPreview from '@/components/home/MaterialsPreview';
+import Testimonials from '@/components/home/Testimonials';
+import FAQ from '@/components/home/FAQ';
+import ContactCTA from '@/components/home/ContactCTA';
 import FutureContent from '@/components/home/FutureContent';
 
 export default function HomePage() {
@@ -16,9 +19,12 @@ export default function HomePage() {
         </div>
         <About />
         <MaterialsPreview />
+        <Testimonials />
         <FutureContent />
+        <FAQ />
+        <ContactCTA />
       </main>
-      <Footer showMaterialsCta={true} />
+      <Footer showMaterialsCta={false} />
     </>
   );
 }
