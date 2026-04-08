@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { materials as defaultMaterials, comingSoon as defaultComingSoon, contentTypeLabels } from '@/data/materials';
+import BlogManager from '@/components/admin/BlogManager';
 
 // ─── Constants ───────────────────────────────────────────────────────
 const STORAGE_KEYS = {
@@ -542,7 +543,7 @@ const BTN_DANGER = 'px-3 py-1.5 border border-red-900/30 text-red-400 text-xs fo
 const BTN_ICON = 'p-1.5 text-[#6E6458] hover:text-[#B48C50] transition-colors rounded';
 
 // ─── Command Palette ────────────────────────────────────────────────
-function CommandPalette({ open, onClose, materialsList, blogList, testimonialsList, faqsList, setActiveTab, onEditMaterial }) {
+function CommandPalette({ open, onClose, materialsList, testimonialsList, faqsList, setActiveTab, onEditMaterial }) {
   const inputRef = useRef(null);
   const [query, setQuery] = useState('');
 
@@ -577,13 +578,6 @@ function CommandPalette({ open, onClose, materialsList, blogList, testimonialsLi
       }
     });
 
-    // Blog posts
-    (blogList || []).forEach((p) => {
-      if (p.title.toLowerCase().includes(q)) {
-        items.push({ id: 'blog-' + p.id, label: p.title, category: 'Blog', icon: 'pen', tab: 'blog' });
-      }
-    });
-
     // Testimonials
     testimonialsList.forEach((t) => {
       if (t.name.toLowerCase().includes(q) || t.quote.toLowerCase().includes(q)) {
@@ -606,7 +600,7 @@ function CommandPalette({ open, onClose, materialsList, blogList, testimonialsLi
     });
 
     return items.slice(0, 15);
-  }, [query, materialsList, blogList, testimonialsList, faqsList, actions]);
+  }, [query, materialsList, testimonialsList, faqsList, actions]);
 
   const handleSelect = (item) => {
     onClose();
@@ -720,11 +714,11 @@ function CommandPalette({ open, onClose, materialsList, blogList, testimonialsLi
 }
 
 // ─── Mobile Bottom Navigation ───────────────────────────────────────
-function MobileBottomNav({ activeTab, setActiveTab, materialsList, blogList, testimonialsList, faqsList }) {
+function MobileBottomNav({ activeTab, setActiveTab, materialsList, testimonialsList, faqsList }) {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: IconGrid },
     { id: 'materials', label: 'Materiais', icon: IconBook, badge: materialsList.length },
-    { id: 'blog', label: 'Blog', icon: IconPen, badge: blogList.length },
+    { id: 'blog', label: 'Blog', icon: IconPen },
     { id: 'testimonials', label: 'Depoimentos', icon: IconChat, badge: testimonialsList.length },
     { id: 'faqs', label: 'FAQ', icon: IconHelpCircle, badge: faqsList.length },
     { id: 'settings', label: 'Config', icon: IconGear },
@@ -775,7 +769,7 @@ function AutoSaveIndicator({ show }) {
 }
 
 // ─── Dashboard Tab ───────────────────────────────────────────────────
-function DashboardTab({ materialsList, blogList, testimonialsList, faqsList, comingSoonList, setComingSoonList, activityLog, addToast, addLogEntry, onNavigateToMaterials }) {
+function DashboardTab({ materialsList, testimonialsList, faqsList, comingSoonList, setComingSoonList, activityLog, addToast, addLogEntry, onNavigateToMaterials }) {
   const [newComingSoon, setNewComingSoon] = useState('');
 
   const total = materialsList.length;
@@ -842,10 +836,9 @@ function DashboardTab({ materialsList, blogList, testimonialsList, faqsList, com
         <StatCard label="Capitulos" value={`${availableChapters}/${totalChapters}`} />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <StatCard label="Livros" value={livros} />
         <StatCard label="Temas" value={temas} />
-        <StatCard label="Posts Blog" value={blogList.filter((p) => p.published).length} accent />
         <StatCard label="Depoimentos" value={testimonialsList.length} />
         <StatCard label="FAQs" value={faqsList.length} />
       </div>
@@ -1844,8 +1837,8 @@ function FAQTab({ faqsList, setFaqsList, addToast, addLogEntry }) {
   );
 }
 
-// ─── Blog Manager Tab ────────────────────────────────────────────────
-function BlogTab({ blogList, setBlogList, addToast, addLogEntry }) {
+// ─── Old BlogTab removed — replaced by BlogManager component ────────
+function _OldBlogTabRemoved() {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
   const [showAddForm, setShowAddForm] = useState(false);
@@ -2239,7 +2232,7 @@ function SettingsTab({ settings, setSettings, addToast, addLogEntry }) {
 }
 
 // ─── Actions Tab ─────────────────────────────────────────────────────
-function ActionsTab({ materialsList, blogList, testimonialsList, faqsList, comingSoonList, settings, addToast, addLogEntry, clearLog }) {
+function ActionsTab({ materialsList, testimonialsList, faqsList, comingSoonList, settings, addToast, addLogEntry, clearLog }) {
   const [copied, setCopied] = useState('');
   const [previewMaterialId, setPreviewMaterialId] = useState('');
 
@@ -2257,7 +2250,6 @@ function ActionsTab({ materialsList, blogList, testimonialsList, faqsList, comin
     const data = {
       exportedAt: new Date().toISOString(),
       materials: materialsList,
-      blog: blogList,
       testimonials: testimonialsList,
       faqs: faqsList,
       comingSoon: comingSoonList,
@@ -2498,10 +2490,6 @@ function AdminPanel() {
   const [comingSoonList, setComingSoonList] = useState(() =>
     loadFromStorage(STORAGE_KEYS.comingSoon, defaultComingSoon)
   );
-  const [blogList, setBlogList] = useState(() =>
-    loadFromStorage(STORAGE_KEYS.blog, [])
-  );
-
   // Command palette state
   const [cmdPaletteOpen, setCmdPaletteOpen] = useState(false);
 
@@ -2520,7 +2508,6 @@ function AdminPanel() {
   useEffect(() => { saveToStorage(STORAGE_KEYS.testimonials, testimonialsList); }, [testimonialsList]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.faqs, faqsList); }, [faqsList]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.comingSoon, comingSoonList); }, [comingSoonList]);
-  useEffect(() => { saveToStorage(STORAGE_KEYS.blog, blogList); }, [blogList]);
 
   // Show "Salvo" indicator when data changes (skip first render)
   useEffect(() => {
@@ -2531,7 +2518,7 @@ function AdminPanel() {
     setShowSaved(true);
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(() => setShowSaved(false), 1500);
-  }, [materialsList, settings, testimonialsList, faqsList, comingSoonList, blogList]);
+  }, [materialsList, settings, testimonialsList, faqsList, comingSoonList]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -2573,7 +2560,7 @@ function AdminPanel() {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', badge: null },
     { id: 'materials', label: 'Materiais', badge: materialsList.length },
-    { id: 'blog', label: 'Blog', badge: blogList.length },
+    { id: 'blog', label: 'Blog', badge: null },
     { id: 'testimonials', label: 'Depoimentos', badge: testimonialsList.length },
     { id: 'faqs', label: 'FAQ', badge: faqsList.length },
     { id: 'settings', label: 'Configuracoes', badge: null },
@@ -2591,7 +2578,6 @@ function AdminPanel() {
             open={cmdPaletteOpen}
             onClose={() => setCmdPaletteOpen(false)}
             materialsList={materialsList}
-            blogList={blogList}
             testimonialsList={testimonialsList}
             faqsList={faqsList}
             setActiveTab={setActiveTab}
@@ -2649,7 +2635,6 @@ function AdminPanel() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         materialsList={materialsList}
-        blogList={blogList}
         testimonialsList={testimonialsList}
         faqsList={faqsList}
       />
@@ -2661,7 +2646,6 @@ function AdminPanel() {
             <DashboardTab
               key="dashboard"
               materialsList={materialsList}
-              blogList={blogList}
               testimonialsList={testimonialsList}
               faqsList={faqsList}
               comingSoonList={comingSoonList}
@@ -2684,10 +2668,8 @@ function AdminPanel() {
             />
           )}
           {activeTab === 'blog' && (
-            <BlogTab
+            <BlogManager
               key="blog"
-              blogList={blogList}
-              setBlogList={setBlogList}
               addToast={addToast}
               addLogEntry={addLogEntry}
             />
@@ -2723,7 +2705,6 @@ function AdminPanel() {
             <ActionsTab
               key="actions"
               materialsList={materialsList}
-              blogList={blogList}
               testimonialsList={testimonialsList}
               faqsList={faqsList}
               comingSoonList={comingSoonList}

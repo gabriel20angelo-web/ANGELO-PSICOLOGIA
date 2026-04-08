@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-
-const STORAGE_KEY = 'angelo_admin_blog';
+import { isSupabaseConfigured, fetchPublishedPosts, fetchPublishedPostBySlug, fetchPublishedPostById } from '@/lib/supabase-blog';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -19,41 +18,6 @@ function formatDate(dateStr) {
   } catch {
     return dateStr;
   }
-}
-
-function renderContent(text) {
-  if (!text) return null;
-  return text.split('\n\n').map((paragraph, i) => {
-    if (paragraph.startsWith('# ')) {
-      return (
-        <h2 key={i} className="font-serif text-2xl text-text-bright mt-8 mb-4">
-          {paragraph.slice(2)}
-        </h2>
-      );
-    }
-    if (paragraph.startsWith('## ')) {
-      return (
-        <h3 key={i} className="font-serif text-xl text-text-bright mt-6 mb-3">
-          {paragraph.slice(3)}
-        </h3>
-      );
-    }
-    if (paragraph.startsWith('> ')) {
-      return (
-        <blockquote
-          key={i}
-          className="border-l-2 border-accent/40 pl-4 my-6 text-text-base italic font-serif leading-relaxed"
-        >
-          {paragraph.slice(2)}
-        </blockquote>
-      );
-    }
-    return (
-      <p key={i} className="text-text-base font-sans leading-[1.85] mb-4">
-        {paragraph}
-      </p>
-    );
-  });
 }
 
 function BlogPostView({ post, onBack }) {
@@ -76,7 +40,7 @@ function BlogPostView({ post, onBack }) {
 
       <div className="flex items-center gap-4 mb-6">
         <time className="text-xs uppercase tracking-widest text-text-dim font-sans">
-          {formatDate(post.date)}
+          {formatDate(post.published_at)}
         </time>
         {post.tags && post.tags.map((tag) => (
           <span key={tag} className="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full font-sans">
@@ -91,24 +55,22 @@ function BlogPostView({ post, onBack }) {
 
       {post.author && (
         <p className="text-sm text-text-dim font-sans mb-8">
-          Por <span className="text-text-base">{post.author}</span>
+          Por <span className="text-text">{post.author}</span>
         </p>
       )}
 
-      {post.imageUrl && (
+      {post.featured_image && (
         <div className="aspect-[16/9] rounded-xl overflow-hidden mb-10 border border-border-subtle">
           <img
-            src={post.imageUrl}
-            alt={post.title}
+            src={post.featured_image}
+            alt={post.featured_image_alt || post.title}
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
         </div>
       )}
 
-      <div className="prose-custom">
-        {renderContent(post.content)}
-      </div>
+      <div className="blog-content" dangerouslySetInnerHTML={{ __html: post.content_html }} />
 
       <div className="mt-16 pt-8 border-t border-border-subtle">
         <button
@@ -132,11 +94,11 @@ function BlogCard({ post, onClick }) {
       onClick={onClick}
     >
       <div className="bg-bg-card border border-border-subtle rounded-xl overflow-hidden hover:border-accent/30 transition-all duration-300 group-hover:-translate-y-1 h-full flex flex-col">
-        {post.imageUrl && (
+        {post.featured_image && (
           <div className="aspect-[16/9] overflow-hidden bg-bg-warm">
             <img
-              src={post.imageUrl}
-              alt={post.title}
+              src={post.featured_image}
+              alt={post.featured_image_alt || post.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               referrerPolicy="no-referrer"
             />
@@ -145,7 +107,7 @@ function BlogCard({ post, onClick }) {
         <div className="p-5 flex flex-col flex-1">
           <div className="flex items-center gap-3 mb-3">
             <time className="text-[10px] uppercase tracking-widest text-text-dim font-sans">
-              {formatDate(post.date)}
+              {formatDate(post.published_at)}
             </time>
             {post.tags && post.tags.length > 0 && (
               <span className="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full font-sans">
@@ -170,28 +132,35 @@ function BlogCard({ post, onClick }) {
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedPost, setSelectedPost] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  // Load all published posts
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const all = JSON.parse(raw);
-        const published = all
-          .filter((p) => p.published)
-          .sort((a, b) => new Date(b.date) - new Date(a.date));
-        setPosts(published);
-      }
-    } catch {}
+    if (!isSupabaseConfigured) { setLoading(false); return; }
+    fetchPublishedPosts()
+      .then((data) => setPosts(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
-  // Read post ID from URL params
+  // Read post identifier from URL params and fetch it
   useEffect(() => {
+    if (!isSupabaseConfigured) return;
     const params = new URLSearchParams(window.location.search);
-    const postId = params.get('post');
-    if (postId) setSelectedPostId(postId);
+    const postParam = params.get('post');
+    if (!postParam) return;
+
+    // Try by slug first, then by ID
+    fetchPublishedPostBySlug(postParam)
+      .then((post) => { if (post) setSelectedPost(post); })
+      .catch(() => {
+        fetchPublishedPostById(postParam)
+          .then((post) => { if (post) setSelectedPost(post); })
+          .catch(() => {});
+      });
   }, []);
 
   const allTags = useMemo(() => {
@@ -204,22 +173,20 @@ export default function BlogPage() {
     return posts.filter((p) => {
       const matchesSearch = !searchQuery ||
         p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+        (p.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase());
       const matchesTag = !selectedTag || (p.tags || []).includes(selectedTag);
       return matchesSearch && matchesTag;
     });
   }, [posts, searchQuery, selectedTag]);
 
-  const selectedPost = posts.find((p) => p.id === selectedPostId);
-
   const handleBack = () => {
-    setSelectedPostId(null);
+    setSelectedPost(null);
     window.history.pushState({}, '', window.location.pathname);
   };
 
-  const handleSelectPost = (postId) => {
-    setSelectedPostId(postId);
-    window.history.pushState({}, '', `?post=${postId}`);
+  const handleSelectPost = (post) => {
+    setSelectedPost(post);
+    window.history.pushState({}, '', `?post=${post.slug || post.id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -299,13 +266,18 @@ export default function BlogPage() {
                 )}
 
                 {/* Posts grid */}
-                {filteredPosts.length > 0 ? (
+                {loading ? (
+                  <div className="text-center py-20">
+                    <span className="text-3xl font-serif text-accent animate-pulse">{'\u03C8'}</span>
+                    <p className="text-text-dim font-sans text-sm mt-3">Carregando...</p>
+                  </div>
+                ) : filteredPosts.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredPosts.map((post) => (
                       <BlogCard
                         key={post.id}
                         post={post}
-                        onClick={() => handleSelectPost(post.id)}
+                        onClick={() => handleSelectPost(post)}
                       />
                     ))}
                   </div>
