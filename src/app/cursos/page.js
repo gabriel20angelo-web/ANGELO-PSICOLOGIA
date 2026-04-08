@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import CourseCardComponent from '@/components/cursos/CourseCard';
+import CategoryCarousel from '@/components/cursos/CategoryCarousel';
 
 /* ========================================
    ANIMATION VARIANTS
@@ -232,7 +234,6 @@ export default function CursosPage() {
    VIEW 1: COURSE LISTING
 ======================================== */
 function CourseListing({ courses, categories, progressMap, onNavigate }) {
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const publishedCourses = useMemo(
@@ -240,227 +241,138 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
     [courses]
   );
 
-  const filteredCourses = useMemo(() => {
-    return publishedCourses.filter(course => {
-      const matchesCategory = selectedCategory === 'all' || course.category === selectedCategory;
-      const matchesSearch = !searchQuery ||
-        course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.description?.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
+  const featuredCourses = useMemo(
+    () => publishedCourses.filter(c => c.featured).sort((a, b) => (a.display_order || 0) - (b.display_order || 0)),
+    [publishedCourses]
+  );
+
+  const searchResults = useMemo(() => {
+    if (!searchQuery) return null;
+    return publishedCourses.filter(course =>
+      course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [publishedCourses, searchQuery]);
+
+  // Group courses by category for carousels
+  const categoryGroups = useMemo(() => {
+    const nonFeatured = publishedCourses.filter(c => !c.featured);
+    const groups = {};
+    nonFeatured.forEach(c => {
+      const cat = c.category || 'Sem categoria';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(c);
     });
-  }, [publishedCourses, selectedCategory, searchQuery]);
+    return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+  }, [publishedCourses]);
+
+  const getProgressPct = (courseId) => {
+    const progress = progressMap[courseId] || {};
+    const course = courses.find(c => c.id === courseId);
+    if (!course) return 0;
+    return calculateCourseProgress(course, progress);
+  };
+
+  const handleSelect = (course) => {
+    onNavigate(`/cursos?curso=${course.slug || course.id}`);
+  };
 
   return (
     <main className="min-h-screen">
       {/* Hero */}
       <section className="relative pt-32 md:pt-40 pb-16 px-6 md:px-12 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="relative z-10 max-w-[900px] mx-auto text-center"
-        >
-          <motion.p
-            variants={fadeUp}
-            className="font-mono text-[0.68rem] text-text-dim tracking-[0.3em] uppercase mb-6"
-          >
+        <motion.div initial="hidden" animate="visible" variants={stagger}
+          className="relative z-10 max-w-[900px] mx-auto text-center">
+          <motion.p variants={fadeUp} className="font-mono text-[0.68rem] text-text-dim tracking-[0.3em] uppercase mb-6">
             Cursos &middot; Psicologia
           </motion.p>
-          <motion.h1
-            variants={fadeUp}
-            className="font-serif text-[clamp(2.2rem,5vw,3.8rem)] text-text-bright leading-tight mb-6"
-          >
-            Cursos de{' '}
-            <em className="italic text-accent">Psicologia</em>
+          <motion.h1 variants={fadeUp} className="font-serif text-[clamp(2.2rem,5vw,3.8rem)] text-text-bright leading-tight mb-6">
+            Cursos de{' '}<em className="italic text-accent">Psicologia</em>
           </motion.h1>
-          <motion.p
-            variants={fadeUp}
-            className="text-[1rem] text-text-dim max-w-xl mx-auto leading-[1.85]"
-          >
-            Aprofunde seus conhecimentos com cursos pensados para a pratica clinica
-            e o desenvolvimento pessoal.
+          <motion.p variants={fadeUp} className="text-[1rem] text-text-dim max-w-xl mx-auto leading-[1.85]">
+            Aprofunde seus conhecimentos com cursos pensados para a pratica clinica e o desenvolvimento pessoal.
           </motion.p>
         </motion.div>
       </section>
 
-      {/* Filters */}
+      {/* Search */}
       <section className="max-w-[1100px] mx-auto px-6 md:px-12 mb-10">
-        {/* Category filter */}
-        {categories.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-hide">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`shrink-0 px-4 py-2 rounded-full text-sm font-sans transition-all ${
-                selectedCategory === 'all'
-                  ? 'bg-accent text-bg font-medium'
-                  : 'bg-bg-card text-text-dim border border-border-subtle hover:text-text'
-              }`}
-            >
-              Todos
-            </button>
-            {categories.map(cat => (
-              <button
-                key={cat.id || cat.slug}
-                onClick={() => setSelectedCategory(cat.slug || cat.name)}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-sans transition-all ${
-                  selectedCategory === (cat.slug || cat.name)
-                    ? 'bg-accent text-bg font-medium'
-                    : 'bg-bg-card text-text-dim border border-border-subtle hover:text-text'
-                }`}
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Search */}
         <div className="relative">
           <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <input
-            type="text"
-            placeholder="Buscar cursos..."
-            value={searchQuery}
+          <input type="text" placeholder="Buscar cursos..." value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-bg-card border border-border-subtle rounded-xl text-text placeholder:text-text-dim/50 focus:outline-none focus:border-accent/30 transition-colors font-sans text-sm"
-          />
+            className="w-full pl-11 pr-4 py-3 bg-bg-card border border-border-subtle rounded-xl text-text placeholder:text-text-dim/50 focus:outline-none focus:border-accent/30 transition-colors font-sans text-sm" />
         </div>
       </section>
 
-      {/* Course Grid */}
-      <section className="max-w-[1100px] mx-auto px-6 md:px-12 pb-24">
-        {filteredCourses.length > 0 ? (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {filteredCourses.map(course => (
-              <CourseCard
-                key={course.id}
-                course={course}
-                progress={progressMap[course.id] || {}}
-                onClick={() => onNavigate(`/cursos?curso=${course.slug}`)}
+      {/* Search Results */}
+      {searchResults !== null ? (
+        <section className="max-w-[1100px] mx-auto px-6 md:px-12 pb-24">
+          <p className="text-xs text-text-dim font-sans mb-6">{searchResults.length} resultado{searchResults.length !== 1 ? 's' : ''}</p>
+          {searchResults.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {searchResults.map(course => (
+                <CourseCardComponent key={course.id} course={course} onClick={() => handleSelect(course)}
+                  progress={getProgressPct(course.id)} variant="compact" />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-text-dim font-sans text-sm">Nenhum curso encontrado.</p>
+            </div>
+          )}
+        </section>
+      ) : (
+        <section className="max-w-[1200px] mx-auto pb-24">
+          {/* Featured courses */}
+          {featuredCourses.length > 0 && (
+            <div className="px-6 md:px-12 mb-12">
+              <h3 className="font-serif text-lg text-text-bright mb-5 flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-accent">
+                  <path d="M12 2l3 9h9l-7.5 5.5L19 22l-7-5-7 5 2.5-5.5L0 11h9z" />
+                </svg>
+                Destaques
+              </h3>
+              <div className={`grid gap-5 ${
+                featuredCourses.length === 1 ? 'grid-cols-1 max-w-[300px]' :
+                featuredCourses.length === 2 ? 'grid-cols-2 max-w-[620px]' :
+                featuredCourses.length === 3 ? 'grid-cols-2 md:grid-cols-3 max-w-[940px]' :
+                'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+              }`}>
+                {featuredCourses.map(course => (
+                  <CourseCardComponent key={course.id} course={course} onClick={() => handleSelect(course)}
+                    progress={getProgressPct(course.id)} variant="featured" />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Category carousels */}
+          {categoryGroups.map(([category, categoryCourses]) => (
+            <div key={category} className="px-6 md:px-12">
+              <CategoryCarousel
+                title={category}
+                courses={categoryCourses}
+                onSelectCourse={handleSelect}
+                getProgress={getProgressPct}
               />
-            ))}
-          </motion.div>
-        ) : (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            className="text-center py-24"
-          >
-            <p className="text-5xl mb-6 opacity-30">&Psi;</p>
-            <p className="font-serif text-xl text-text-bright mb-2">Em breve, novos cursos</p>
-            <p className="text-text-dim text-sm">
-              Estamos preparando conteudos especiais para voce.
-            </p>
-          </motion.div>
-        )}
-      </section>
+            </div>
+          ))}
+
+          {/* Empty state */}
+          {publishedCourses.length === 0 && (
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center py-24">
+              <p className="text-5xl mb-6 opacity-30">&Psi;</p>
+              <p className="font-serif text-xl text-text-bright mb-2">Em breve, novos cursos</p>
+              <p className="text-text-dim text-sm">Estamos preparando conteudos especiais para voce.</p>
+            </motion.div>
+          )}
+        </section>
+      )}
     </main>
-  );
-}
-
-/* ========================================
-   COURSE CARD
-======================================== */
-function CourseCard({ course, progress, onClick }) {
-  const percent = calculateCourseProgress(course, progress);
-  const totalLessons = getTotalLessons(course);
-  const totalMinutes = getTotalDuration(course);
-  const hasStarted = Object.keys(progress).length > 0;
-
-  return (
-    <motion.article
-      variants={fadeUp}
-      onClick={onClick}
-      className="group cursor-pointer bg-bg-card border border-border-subtle rounded-2xl overflow-hidden hover:border-accent/20 transition-all duration-300"
-    >
-      {/* Thumbnail */}
-      <div className="relative aspect-[4/3] bg-bg-warm overflow-hidden">
-        {course.thumbnail ? (
-          <img
-            src={course.thumbnail}
-            alt={course.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-text-dim/30">
-            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        )}
-
-        {/* Featured badge */}
-        {course.featured && (
-          <span className="absolute top-3 left-3 px-3 py-1 bg-accent text-bg text-[0.65rem] font-sans font-semibold uppercase tracking-wider rounded-full">
-            Destaque
-          </span>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="p-5">
-        {/* Category */}
-        {course.category && (
-          <span className="inline-block text-[0.65rem] font-mono text-accent uppercase tracking-wider mb-2">
-            {course.category}
-          </span>
-        )}
-
-        <h3 className="font-serif text-lg text-text-bright mb-2 group-hover:text-accent transition-colors line-clamp-2">
-          {course.title}
-        </h3>
-
-        <p className="text-sm text-text-dim leading-relaxed line-clamp-2 mb-4">
-          {course.description}
-        </p>
-
-        {/* Meta */}
-        <div className="flex items-center gap-4 text-[0.7rem] text-text-dim">
-          {totalLessons > 0 && (
-            <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              </svg>
-              {totalLessons} {totalLessons === 1 ? 'aula' : 'aulas'}
-            </span>
-          )}
-          {totalMinutes > 0 && (
-            <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {formatDuration(totalMinutes)}
-            </span>
-          )}
-        </div>
-
-        {/* Progress bar */}
-        {hasStarted && (
-          <div className="mt-4">
-            <div className="flex items-center justify-between text-[0.65rem] text-text-dim mb-1">
-              <span>Progresso</span>
-              <span className="text-accent">{percent}%</span>
-            </div>
-            <div className="h-1.5 bg-bg-warm rounded-full overflow-hidden">
-              <div
-                className="h-full bg-accent rounded-full transition-all duration-500"
-                style={{ width: `${percent}%` }}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    </motion.article>
   );
 }
 
