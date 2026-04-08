@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { materials as defaultMaterials, comingSoon as defaultComingSoon, contentTypeLabels } from '@/data/materials';
 import BlogManager from '@/components/admin/BlogManager';
+import CourseManager from '@/components/admin/CourseManager';
 
 // ─── Constants ───────────────────────────────────────────────────────
 const STORAGE_KEYS = {
@@ -234,6 +235,14 @@ function IconSearch({ size = 20 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
+
+function IconVideo({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="5 3 19 12 5 21 5 3" />
     </svg>
   );
 }
@@ -561,6 +570,7 @@ function CommandPalette({ open, onClose, materialsList, testimonialsList, faqsLi
     { id: 'action-dashboard', label: 'Ir para Dashboard', category: 'Acoes', icon: 'grid', tab: 'dashboard' },
     { id: 'action-settings', label: 'Ir para Configuracoes', category: 'Acoes', icon: 'gear', tab: 'settings' },
     { id: 'action-blog', label: 'Ir para Blog', category: 'Acoes', icon: 'pen', tab: 'blog' },
+    { id: 'action-courses', label: 'Ir para Cursos', category: 'Acoes', icon: 'pen', tab: 'courses' },
     { id: 'action-faq', label: 'Ir para FAQ', category: 'Acoes', icon: 'help', tab: 'faqs' },
     { id: 'action-testimonials', label: 'Ir para Depoimentos', category: 'Acoes', icon: 'chat', tab: 'testimonials' },
   ], []);
@@ -719,6 +729,7 @@ function MobileBottomNav({ activeTab, setActiveTab, materialsList, testimonialsL
     { id: 'dashboard', label: 'Dashboard', icon: IconGrid },
     { id: 'materials', label: 'Materiais', icon: IconBook, badge: materialsList.length },
     { id: 'blog', label: 'Blog', icon: IconPen },
+    { id: 'courses', label: 'Cursos', icon: IconVideo },
     { id: 'testimonials', label: 'Depoimentos', icon: IconChat, badge: testimonialsList.length },
     { id: 'faqs', label: 'FAQ', icon: IconHelpCircle, badge: faqsList.length },
     { id: 'settings', label: 'Config', icon: IconGear },
@@ -2561,6 +2572,7 @@ function AdminPanel() {
     { id: 'dashboard', label: 'Dashboard', badge: null },
     { id: 'materials', label: 'Materiais', badge: materialsList.length },
     { id: 'blog', label: 'Blog', badge: null },
+    { id: 'courses', label: 'Cursos', badge: null },
     { id: 'testimonials', label: 'Depoimentos', badge: testimonialsList.length },
     { id: 'faqs', label: 'FAQ', badge: faqsList.length },
     { id: 'settings', label: 'Configuracoes', badge: null },
@@ -2670,6 +2682,13 @@ function AdminPanel() {
           {activeTab === 'blog' && (
             <BlogManager
               key="blog"
+              addToast={addToast}
+              addLogEntry={addLogEntry}
+            />
+          )}
+          {activeTab === 'courses' && (
+            <CourseManager
+              key="courses"
               addToast={addToast}
               addLogEntry={addLogEntry}
             />

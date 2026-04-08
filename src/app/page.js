@@ -8,6 +8,7 @@ import FAQ from '@/components/home/FAQ';
 import ContactCTA from '@/components/home/ContactCTA';
 import FutureContent from '@/components/home/FutureContent';
 import BlogPreview from '@/components/home/BlogPreview';
+import CoursesPreview from '@/components/home/CoursesPreview';
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
         </div>
         <About />
         <MaterialsPreview />
+        <CoursesPreview />
         <BlogPreview />
         <Testimonials />
         <FutureContent />
