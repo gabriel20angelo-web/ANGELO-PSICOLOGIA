@@ -7,6 +7,7 @@ import Testimonials from '@/components/home/Testimonials';
 import FAQ from '@/components/home/FAQ';
 import ContactCTA from '@/components/home/ContactCTA';
 import FutureContent from '@/components/home/FutureContent';
+import BlogPreview from '@/components/home/BlogPreview';
 
 export default function HomePage() {
   return (
@@ -19,6 +20,7 @@ export default function HomePage() {
         </div>
         <About />
         <MaterialsPreview />
+        <BlogPreview />
         <Testimonials />
         <FutureContent />
         <FAQ />

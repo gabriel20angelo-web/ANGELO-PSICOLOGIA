@@ -52,7 +52,7 @@ export default function MaterialsPreview() {
                 {/* Image */}
                 <div className="w-full aspect-[4/3] bg-bg border border-border-subtle mb-5 overflow-hidden">
                   {item.image ? (
-                    <img src={img(item.image)} alt={item.title} className="w-full h-full object-cover" />
+                    <img src={item.image && (item.image.startsWith('http://') || item.image.startsWith('https://')) ? item.image : img(item.image)} alt={item.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <span className="font-sans text-[0.6rem] text-text-dim opacity-30 tracking-[0.15em] uppercase">Imagem</span>

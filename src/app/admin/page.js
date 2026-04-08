@@ -14,6 +14,7 @@ const STORAGE_KEYS = {
   comingSoon: 'angelo_admin_coming_soon',
   activityLog: 'angelo_admin_activity_log',
   password: 'angelo_admin_password',
+  blog: 'angelo_admin_blog',
 };
 
 const DEFAULT_PASSWORD = 'Nilohihi1408!';
@@ -232,6 +233,14 @@ function IconSearch({ size = 20 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
+
+function IconPen({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
     </svg>
   );
 }
@@ -533,7 +542,7 @@ const BTN_DANGER = 'px-3 py-1.5 border border-red-900/30 text-red-400 text-xs fo
 const BTN_ICON = 'p-1.5 text-[#6E6458] hover:text-[#B48C50] transition-colors rounded';
 
 // ─── Command Palette ────────────────────────────────────────────────
-function CommandPalette({ open, onClose, materialsList, testimonialsList, faqsList, setActiveTab, onEditMaterial }) {
+function CommandPalette({ open, onClose, materialsList, blogList, testimonialsList, faqsList, setActiveTab, onEditMaterial }) {
   const inputRef = useRef(null);
   const [query, setQuery] = useState('');
 
@@ -550,6 +559,7 @@ function CommandPalette({ open, onClose, materialsList, testimonialsList, faqsLi
     { id: 'action-new-material', label: 'Novo material', category: 'Acoes', icon: 'zap', tab: 'materials' },
     { id: 'action-dashboard', label: 'Ir para Dashboard', category: 'Acoes', icon: 'grid', tab: 'dashboard' },
     { id: 'action-settings', label: 'Ir para Configuracoes', category: 'Acoes', icon: 'gear', tab: 'settings' },
+    { id: 'action-blog', label: 'Ir para Blog', category: 'Acoes', icon: 'pen', tab: 'blog' },
     { id: 'action-faq', label: 'Ir para FAQ', category: 'Acoes', icon: 'help', tab: 'faqs' },
     { id: 'action-testimonials', label: 'Ir para Depoimentos', category: 'Acoes', icon: 'chat', tab: 'testimonials' },
   ], []);
@@ -564,6 +574,13 @@ function CommandPalette({ open, onClose, materialsList, testimonialsList, faqsLi
     materialsList.forEach((m) => {
       if (m.title.toLowerCase().includes(q)) {
         items.push({ id: 'mat-' + m.id, label: m.title, category: 'Materiais', icon: 'book', materialId: m.id });
+      }
+    });
+
+    // Blog posts
+    (blogList || []).forEach((p) => {
+      if (p.title.toLowerCase().includes(q)) {
+        items.push({ id: 'blog-' + p.id, label: p.title, category: 'Blog', icon: 'pen', tab: 'blog' });
       }
     });
 
@@ -589,7 +606,7 @@ function CommandPalette({ open, onClose, materialsList, testimonialsList, faqsLi
     });
 
     return items.slice(0, 15);
-  }, [query, materialsList, testimonialsList, faqsList, actions]);
+  }, [query, materialsList, blogList, testimonialsList, faqsList, actions]);
 
   const handleSelect = (item) => {
     onClose();
@@ -614,6 +631,7 @@ function CommandPalette({ open, onClose, materialsList, testimonialsList, faqsLi
       case 'help': return <IconHelpCircle size={16} />;
       case 'grid': return <IconGrid size={16} />;
       case 'gear': return <IconGear size={16} />;
+      case 'pen': return <IconPen size={16} />;
       case 'zap': return <IconZap size={16} />;
       default: return <IconSearch size={16} />;
     }
@@ -702,10 +720,11 @@ function CommandPalette({ open, onClose, materialsList, testimonialsList, faqsLi
 }
 
 // ─── Mobile Bottom Navigation ───────────────────────────────────────
-function MobileBottomNav({ activeTab, setActiveTab, materialsList, testimonialsList, faqsList }) {
+function MobileBottomNav({ activeTab, setActiveTab, materialsList, blogList, testimonialsList, faqsList }) {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: IconGrid },
     { id: 'materials', label: 'Materiais', icon: IconBook, badge: materialsList.length },
+    { id: 'blog', label: 'Blog', icon: IconPen, badge: blogList.length },
     { id: 'testimonials', label: 'Depoimentos', icon: IconChat, badge: testimonialsList.length },
     { id: 'faqs', label: 'FAQ', icon: IconHelpCircle, badge: faqsList.length },
     { id: 'settings', label: 'Config', icon: IconGear },
@@ -756,7 +775,7 @@ function AutoSaveIndicator({ show }) {
 }
 
 // ─── Dashboard Tab ───────────────────────────────────────────────────
-function DashboardTab({ materialsList, testimonialsList, faqsList, comingSoonList, setComingSoonList, activityLog, addToast, addLogEntry, onNavigateToMaterials }) {
+function DashboardTab({ materialsList, blogList, testimonialsList, faqsList, comingSoonList, setComingSoonList, activityLog, addToast, addLogEntry, onNavigateToMaterials }) {
   const [newComingSoon, setNewComingSoon] = useState('');
 
   const total = materialsList.length;
@@ -823,9 +842,10 @@ function DashboardTab({ materialsList, testimonialsList, faqsList, comingSoonLis
         <StatCard label="Capitulos" value={`${availableChapters}/${totalChapters}`} />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <StatCard label="Livros" value={livros} />
         <StatCard label="Temas" value={temas} />
+        <StatCard label="Posts Blog" value={blogList.filter((p) => p.published).length} accent />
         <StatCard label="Depoimentos" value={testimonialsList.length} />
         <StatCard label="FAQs" value={faqsList.length} />
       </div>
@@ -1229,8 +1249,13 @@ function MaterialsTab({ materialsList, setMaterialsList, addToast, addLogEntry, 
         <input value={data.chapterPrice} onChange={(e) => setData({ ...data, chapterPrice: e.target.value })} placeholder="R$ XX,XX" className={INPUT_CLASS} />
       </div>
       <div>
-        <label className={LABEL_CLASS}>Imagem (caminho)</label>
-        <input value={data.image} onChange={(e) => setData({ ...data, image: e.target.value })} placeholder="/images/nome.jpg" className={INPUT_CLASS} />
+        <label className={LABEL_CLASS}>Imagem (caminho local ou URL externa)</label>
+        <input value={data.image} onChange={(e) => setData({ ...data, image: e.target.value })} placeholder="/images/nome.jpg ou https://..." className={INPUT_CLASS} />
+        {data.image && (data.image.startsWith('http://') || data.image.startsWith('https://')) && (
+          <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-[rgba(180,140,80,0.15)]">
+            <img src={data.image} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.style.display = 'none'; }} />
+          </div>
+        )}
       </div>
       <div className="sm:col-span-2">
         <label className={LABEL_CLASS}>Link WhatsApp</label>
@@ -1819,6 +1844,257 @@ function FAQTab({ faqsList, setFaqsList, addToast, addLogEntry }) {
   );
 }
 
+// ─── Blog Manager Tab ────────────────────────────────────────────────
+function BlogTab({ blogList, setBlogList, addToast, addLogEntry }) {
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [newPost, setNewPost] = useState({
+    title: '', excerpt: '', content: '', imageUrl: '', author: 'Angelo',
+    tags: '', published: true, date: new Date().toISOString().slice(0, 10),
+  });
+
+  const startEdit = (p) => {
+    setEditingId(p.id);
+    setEditData({
+      title: p.title, excerpt: p.excerpt || '', content: p.content || '',
+      imageUrl: p.imageUrl || '', author: p.author || '', tags: (p.tags || []).join(', '),
+      published: p.published, date: p.date || '',
+    });
+  };
+
+  const saveEdit = (id) => {
+    setBlogList((prev) =>
+      prev.map((p) => (p.id === id ? {
+        ...p,
+        title: editData.title, excerpt: editData.excerpt, content: editData.content,
+        imageUrl: editData.imageUrl, author: editData.author,
+        tags: editData.tags.split(',').map((t) => t.trim()).filter(Boolean),
+        published: editData.published, date: editData.date,
+      } : p))
+    );
+    setEditingId(null);
+    addLogEntry('Post editado', editData.title);
+    addToast('Post salvo', 'success');
+  };
+
+  const addNew = () => {
+    if (!newPost.title.trim()) {
+      addToast('Titulo e obrigatorio', 'error');
+      return;
+    }
+    const post = {
+      id: generateId(),
+      title: newPost.title, excerpt: newPost.excerpt, content: newPost.content,
+      imageUrl: newPost.imageUrl, author: newPost.author,
+      tags: newPost.tags.split(',').map((t) => t.trim()).filter(Boolean),
+      published: newPost.published, date: newPost.date,
+    };
+    setBlogList((prev) => [post, ...prev]);
+    setNewPost({
+      title: '', excerpt: '', content: '', imageUrl: '', author: 'Angelo',
+      tags: '', published: true, date: new Date().toISOString().slice(0, 10),
+    });
+    setShowAddForm(false);
+    addLogEntry('Post criado', post.title);
+    addToast('Post publicado', 'success');
+  };
+
+  const deleteItem = (id) => {
+    const p = blogList.find((x) => x.id === id);
+    setBlogList((prev) => prev.filter((x) => x.id !== id));
+    setDeleteConfirm(null);
+    addLogEntry('Post removido', p?.title || id);
+    addToast('Post removido', 'success');
+  };
+
+  const togglePublished = (id) => {
+    setBlogList((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, published: !p.published } : p))
+    );
+  };
+
+  const moveItem = (id, direction) => {
+    setBlogList((prev) => {
+      const idx = prev.findIndex((p) => p.id === id);
+      if (idx < 0) return prev;
+      const newIdx = idx + direction;
+      if (newIdx < 0 || newIdx >= prev.length) return prev;
+      const copy = [...prev];
+      [copy[idx], copy[newIdx]] = [copy[newIdx], copy[idx]];
+      return copy;
+    });
+  };
+
+  const BlogFormFields = ({ data, setData }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="sm:col-span-2">
+        <label className={LABEL_CLASS}>Titulo *</label>
+        <input value={data.title} onChange={(e) => setData({ ...data, title: e.target.value })} className={INPUT_CLASS} />
+      </div>
+      <div>
+        <label className={LABEL_CLASS}>Autor</label>
+        <input value={data.author} onChange={(e) => setData({ ...data, author: e.target.value })} className={INPUT_CLASS} />
+      </div>
+      <div>
+        <label className={LABEL_CLASS}>Data</label>
+        <input type="date" value={data.date} onChange={(e) => setData({ ...data, date: e.target.value })} className={INPUT_CLASS} />
+      </div>
+      <div className="sm:col-span-2">
+        <label className={LABEL_CLASS}>Imagem (URL externa - Google Images, Pinterest, etc.)</label>
+        <input value={data.imageUrl} onChange={(e) => setData({ ...data, imageUrl: e.target.value })} placeholder="https://i.pinimg.com/... ou qualquer URL de imagem" className={INPUT_CLASS} />
+        {data.imageUrl && (
+          <div className="mt-2 w-32 h-20 rounded-lg overflow-hidden border border-[rgba(180,140,80,0.15)]">
+            <img src={data.imageUrl} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.style.display = 'none'; }} />
+          </div>
+        )}
+      </div>
+      <div className="sm:col-span-2">
+        <label className={LABEL_CLASS}>Resumo (aparece nos cards)</label>
+        <textarea value={data.excerpt} onChange={(e) => setData({ ...data, excerpt: e.target.value })} rows={2} className={INPUT_CLASS + ' resize-y'} placeholder="Uma breve descricao do post..." />
+      </div>
+      <div className="sm:col-span-2">
+        <label className={LABEL_CLASS}>Conteudo (use linhas em branco para paragrafos, # para titulos, {'>'} para citacoes)</label>
+        <textarea value={data.content} onChange={(e) => setData({ ...data, content: e.target.value })} rows={10} className={INPUT_CLASS + ' resize-y font-mono text-xs'} placeholder={"# Introducao\n\nPrimeiro paragrafo do seu texto aqui.\n\nSegundo paragrafo com mais conteudo.\n\n> Uma citacao de Jung\n\n## Subtitulo\n\nMais texto..."} />
+      </div>
+      <div className="sm:col-span-2">
+        <label className={LABEL_CLASS}>Tags (separadas por virgula)</label>
+        <input value={data.tags} onChange={(e) => setData({ ...data, tags: e.target.value })} placeholder="Psicologia Analitica, Jung, Individuacao" className={INPUT_CLASS} />
+        {data.tags && (
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {data.tags.split(',').map((t) => t.trim()).filter(Boolean).map((tag, i) => (
+              <span key={i} className="px-2 py-0.5 text-[10px] font-sans bg-[#B48C50]/15 text-[#B48C50] rounded-full border border-[#B48C50]/20">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="sm:col-span-2 flex items-center gap-3">
+        <label className={LABEL_CLASS + ' mb-0'}>Publicado</label>
+        <Toggle enabled={data.published} onChange={(v) => setData({ ...data, published: v })} />
+      </div>
+    </div>
+  );
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-serif text-[#E8DDD0]">Blog ({blogList.length})</h2>
+        <button onClick={() => setShowAddForm(!showAddForm)} className={BTN_PRIMARY}>
+          {showAddForm ? 'Cancelar' : '+ Novo Post'}
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {showAddForm && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+            <div className={`${CARD_CLASS} mb-6`}>
+              <h3 className="text-sm uppercase tracking-widest text-[#6E6458] font-sans mb-4">Novo Post</h3>
+              <BlogFormFields data={newPost} setData={setNewPost} />
+              <div className="flex justify-end mt-4">
+                <button onClick={addNew} className={BTN_PRIMARY}>Publicar Post</button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="space-y-4">
+        {blogList.map((post, idx) => {
+          const isEditing = editingId === post.id;
+          return (
+            <motion.div key={post.id} layout className={CARD_CLASS}>
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  {post.imageUrl && (
+                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 border border-[rgba(180,140,80,0.1)]">
+                      <img src={post.imageUrl} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1 flex-wrap">
+                      <h3 className="text-[#E8DDD0] font-serif text-lg">{post.title}</h3>
+                      {post.published ? (
+                        <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full font-sans text-green-400 border border-green-400/30">
+                          Publicado
+                        </span>
+                      ) : (
+                        <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full font-sans text-yellow-500 border border-yellow-500/30">
+                          Rascunho
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-[#6E6458] font-sans">
+                      {post.date ? new Date(post.date).toLocaleDateString('pt-BR') : 'Sem data'}
+                      {post.author && ` — ${post.author}`}
+                    </p>
+                    {post.excerpt && (
+                      <p className="text-sm text-[#B8AD9E] font-sans mt-1 line-clamp-2">{post.excerpt}</p>
+                    )}
+                    {post.tags && post.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {post.tags.map((tag, i) => (
+                          <span key={i} className="px-2 py-0.5 text-[10px] font-sans bg-[#B48C50]/10 text-[#B48C50]/80 rounded-full">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                  <button onClick={() => moveItem(post.id, -1)} disabled={idx === 0} className={BTN_ICON + ' disabled:opacity-20'} title="Mover para cima">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2l4 5H3l4-5z" fill="currentColor" /></svg>
+                  </button>
+                  <button onClick={() => moveItem(post.id, 1)} disabled={idx === blogList.length - 1} className={BTN_ICON + ' disabled:opacity-20'} title="Mover para baixo">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 12L3 7h8l-4 5z" fill="currentColor" /></svg>
+                  </button>
+                  <Toggle enabled={post.published} onChange={() => togglePublished(post.id)} />
+                  {isEditing ? (
+                    <>
+                      <button onClick={() => setEditingId(null)} className={BTN_SECONDARY}>Cancelar</button>
+                      <button onClick={() => saveEdit(post.id)} className={BTN_PRIMARY}>Salvar</button>
+                    </>
+                  ) : (
+                    <button onClick={() => startEdit(post)} className={BTN_SECONDARY}>Editar</button>
+                  )}
+                  <button onClick={() => setDeleteConfirm(post.id)} className={BTN_DANGER}>Excluir</button>
+                </div>
+              </div>
+
+              <AnimatePresence>
+                {isEditing && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                    <div className="mt-4 pt-4 border-t border-[rgba(180,140,80,0.08)]">
+                      <BlogFormFields data={editData} setData={setEditData} />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+        {blogList.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-sm text-[#3A352E] font-sans">Nenhum post ainda. Crie seu primeiro post!</p>
+          </div>
+        )}
+      </div>
+
+      <ConfirmModal
+        open={!!deleteConfirm}
+        title="Excluir post"
+        message="Tem certeza que deseja excluir este post? Esta acao nao pode ser desfeita."
+        onConfirm={() => deleteItem(deleteConfirm)}
+        onCancel={() => setDeleteConfirm(null)}
+      />
+    </motion.div>
+  );
+}
+
 // ─── Settings Tab ────────────────────────────────────────────────────
 function SettingsTab({ settings, setSettings, addToast, addLogEntry }) {
   const [currentPw, setCurrentPw] = useState('');
@@ -1963,7 +2239,7 @@ function SettingsTab({ settings, setSettings, addToast, addLogEntry }) {
 }
 
 // ─── Actions Tab ─────────────────────────────────────────────────────
-function ActionsTab({ materialsList, testimonialsList, faqsList, comingSoonList, settings, addToast, addLogEntry, clearLog }) {
+function ActionsTab({ materialsList, blogList, testimonialsList, faqsList, comingSoonList, settings, addToast, addLogEntry, clearLog }) {
   const [copied, setCopied] = useState('');
   const [previewMaterialId, setPreviewMaterialId] = useState('');
 
@@ -1981,6 +2257,7 @@ function ActionsTab({ materialsList, testimonialsList, faqsList, comingSoonList,
     const data = {
       exportedAt: new Date().toISOString(),
       materials: materialsList,
+      blog: blogList,
       testimonials: testimonialsList,
       faqs: faqsList,
       comingSoon: comingSoonList,
@@ -2009,6 +2286,7 @@ function ActionsTab({ materialsList, testimonialsList, faqsList, comingSoonList,
         try {
           const data = JSON.parse(ev.target.result);
           if (data.materials) saveToStorage(STORAGE_KEYS.materials, data.materials);
+          if (data.blog) saveToStorage(STORAGE_KEYS.blog, data.blog);
           if (data.settings) saveToStorage(STORAGE_KEYS.settings, data.settings);
           if (data.testimonials) saveToStorage(STORAGE_KEYS.testimonials, data.testimonials);
           if (data.faqs) saveToStorage(STORAGE_KEYS.faqs, data.faqs);
@@ -2220,6 +2498,9 @@ function AdminPanel() {
   const [comingSoonList, setComingSoonList] = useState(() =>
     loadFromStorage(STORAGE_KEYS.comingSoon, defaultComingSoon)
   );
+  const [blogList, setBlogList] = useState(() =>
+    loadFromStorage(STORAGE_KEYS.blog, [])
+  );
 
   // Command palette state
   const [cmdPaletteOpen, setCmdPaletteOpen] = useState(false);
@@ -2239,6 +2520,7 @@ function AdminPanel() {
   useEffect(() => { saveToStorage(STORAGE_KEYS.testimonials, testimonialsList); }, [testimonialsList]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.faqs, faqsList); }, [faqsList]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.comingSoon, comingSoonList); }, [comingSoonList]);
+  useEffect(() => { saveToStorage(STORAGE_KEYS.blog, blogList); }, [blogList]);
 
   // Show "Salvo" indicator when data changes (skip first render)
   useEffect(() => {
@@ -2249,7 +2531,7 @@ function AdminPanel() {
     setShowSaved(true);
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(() => setShowSaved(false), 1500);
-  }, [materialsList, settings, testimonialsList, faqsList, comingSoonList]);
+  }, [materialsList, settings, testimonialsList, faqsList, comingSoonList, blogList]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -2291,6 +2573,7 @@ function AdminPanel() {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', badge: null },
     { id: 'materials', label: 'Materiais', badge: materialsList.length },
+    { id: 'blog', label: 'Blog', badge: blogList.length },
     { id: 'testimonials', label: 'Depoimentos', badge: testimonialsList.length },
     { id: 'faqs', label: 'FAQ', badge: faqsList.length },
     { id: 'settings', label: 'Configuracoes', badge: null },
@@ -2308,6 +2591,7 @@ function AdminPanel() {
             open={cmdPaletteOpen}
             onClose={() => setCmdPaletteOpen(false)}
             materialsList={materialsList}
+            blogList={blogList}
             testimonialsList={testimonialsList}
             faqsList={faqsList}
             setActiveTab={setActiveTab}
@@ -2365,6 +2649,7 @@ function AdminPanel() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         materialsList={materialsList}
+        blogList={blogList}
         testimonialsList={testimonialsList}
         faqsList={faqsList}
       />
@@ -2376,6 +2661,7 @@ function AdminPanel() {
             <DashboardTab
               key="dashboard"
               materialsList={materialsList}
+              blogList={blogList}
               testimonialsList={testimonialsList}
               faqsList={faqsList}
               comingSoonList={comingSoonList}
@@ -2395,6 +2681,15 @@ function AdminPanel() {
               addLogEntry={addLogEntry}
               editMaterialId={editMaterialId}
               clearEditMaterialId={clearEditMaterialId}
+            />
+          )}
+          {activeTab === 'blog' && (
+            <BlogTab
+              key="blog"
+              blogList={blogList}
+              setBlogList={setBlogList}
+              addToast={addToast}
+              addLogEntry={addLogEntry}
             />
           )}
           {activeTab === 'testimonials' && (
@@ -2428,6 +2723,7 @@ function AdminPanel() {
             <ActionsTab
               key="actions"
               materialsList={materialsList}
+              blogList={blogList}
               testimonialsList={testimonialsList}
               faqsList={faqsList}
               comingSoonList={comingSoonList}
