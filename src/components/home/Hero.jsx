@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { img } from '@/lib/basepath';
 import CursorGlow from '@/components/ui/CursorGlow';
+import { PortraitHero } from '@/components/ui/Portrait';
 
 function FloatingParticles() {
   const [particles, setParticles] = useState([]);
@@ -101,8 +101,6 @@ function MandalaBackdrop() {
 }
 
 export default function Hero() {
-  const [photoError, setPhotoError] = useState(false);
-
   const letterAnim = {
     hidden: { opacity: 0, y: 50 },
     visible: (i) => ({
@@ -149,20 +147,16 @@ export default function Hero() {
           {/* Espinha dourada — vertical accent line */}
           <span className="vertical-spine hidden md:block left-0" aria-hidden />
 
-          {/* Ficha técnica mono — bibliographic header */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
+          {/* Eyebrow simples — substitui a ficha técnica */}
+          <motion.p
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="font-mono text-[0.62rem] text-text-dim tracking-[0.28em] uppercase mb-8 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 max-w-md"
+            className="font-mono text-[0.65rem] text-accent tracking-[0.32em] uppercase mb-8 flex items-center gap-3"
           >
-            <span className="text-accent/70">VOL.</span>
-            <span>I · Psicologia Analítica</span>
-            <span className="text-accent/70">CAMPO</span>
-            <span>Clínica · Ensino · Pesquisa</span>
-            <span className="text-accent/70">RAIZ</span>
-            <span>C. G. Jung · Pós-junguianos</span>
-          </motion.div>
+            <span className="block w-8 h-px bg-accent/40" />
+            Psicologia Analítica · Jung
+          </motion.p>
 
           {/* Animated title — display gigante */}
           <h1 className="font-serif font-normal text-text-bright leading-[0.95] mb-3 tracking-[-0.02em]">
@@ -274,60 +268,14 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right: photo */}
+        {/* Right: portrait SVG editorial */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92, rotate: 2 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="hidden md:block"
         >
-          <div className="relative w-full aspect-[3/4] group">
-            <div className="w-full h-full bg-bg-card border border-border-subtle relative overflow-hidden transition-all duration-700 group-hover:border-accent/30 group-hover:shadow-xl group-hover:shadow-accent/5">
-              {!photoError ? (
-                <img
-                  src={img('/images/angelo.jpg')}
-                  alt="Ângelo"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  onError={() => setPhotoError(true)}
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-                  <svg
-                    className="w-10 h-10 text-text-dim opacity-25"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                  >
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <path d="M21 15l-5-5L5 21" />
-                  </svg>
-                  <span className="font-sans text-[0.65rem] tracking-[0.2em] uppercase text-text-dim opacity-35">
-                    Sua foto aqui
-                  </span>
-                </div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </div>
-
-            {/* Decorative fragments */}
-            <motion.span
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -top-3 -left-5 font-serif italic text-[4rem] text-accent opacity-[0.08] leading-none select-none"
-            >
-              ψ
-            </motion.span>
-            <span className="absolute bottom-10 -right-9 block w-[70px] h-px bg-accent opacity-[0.12] -rotate-45" />
-            <span className="absolute -bottom-6 left-5 font-mono text-[0.6rem] text-text-dim opacity-30 tracking-[0.15em]">
-              psychê · alma · borboleta
-            </span>
-
-            {/* Corner accents */}
-            <div className="absolute -top-1 -right-1 w-6 h-6 border-t border-r border-accent/20" />
-            <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b border-l border-accent/20" />
-          </div>
+          <PortraitHero />
         </motion.div>
       </div>
 

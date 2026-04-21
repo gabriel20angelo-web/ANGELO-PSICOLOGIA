@@ -19,11 +19,7 @@ import { img } from '@/lib/basepath';
 function MateriaisHero() {
   return (
     <PageHero
-      meta={[
-        ['VOL.', 'I · Catálogo de estudo'],
-        ['CAMPO', 'Psicologia Analítica · Jung'],
-        ['FORMA', 'Resumos · Mapas mentais'],
-      ]}
+      eyebrow="Catálogo · Resumos & Mapas Mentais"
       title="Materiais"
       emphasis="de estudo"
       kicker="Sínteses vivas, feitas no Obsidian"

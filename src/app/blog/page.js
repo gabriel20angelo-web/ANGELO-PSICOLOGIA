@@ -640,11 +640,7 @@ export default function BlogPage() {
               </>
             ) : (
               <PageHero
-                meta={[
-                  ['VOL.', 'III · Blog'],
-                  ['CAMPO', 'Reflexões · Ensaios · Notas'],
-                  ['TOM',   'Editorial · Junguiano'],
-                ]}
+                eyebrow="Blog · Reflexões & ensaios"
                 title="Reflexões"
                 emphasis="& ensaios"
                 kicker="O caderno aberto"

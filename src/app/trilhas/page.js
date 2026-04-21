@@ -181,11 +181,7 @@ export default function TrilhasPage() {
       <Navbar />
       <main>
         <PageHero
-          meta={[
-            ['VOL.', 'IV · Trilhas'],
-            ['CAMPO', 'Sequências de estudo curadas'],
-            ['INTENÇÃO', 'Resolver "em que ordem ler"'],
-          ]}
+          eyebrow="Trilhas de estudo curadas"
           title="Trilhas"
           emphasis="de estudo"
           kicker="Por onde começar, em qual ordem"

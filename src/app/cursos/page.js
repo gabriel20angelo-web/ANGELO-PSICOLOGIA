@@ -473,11 +473,7 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
         </>
       ) : (
         <PageHero
-          meta={[
-            ['VOL.', 'II · Formação'],
-            ['CAMPO', 'Cursos · Aulas em vídeo'],
-            ['MÉTODO', 'Prática deliberada'],
-          ]}
+          eyebrow="Formação · Aulas em vídeo"
           title="Cursos"
           emphasis="& formação"
           kicker="Aprofunde-se em psicologia analítica"
