@@ -1,21 +1,18 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { img } from '@/lib/basepath';
 
 /**
- * Portrait — ilustração SVG editorial line-art do Ângelo.
+ * Portrait — retrato editorial do Ângelo.
  *
- * Não é fotorrealismo: SVG não comporta isso. É um retrato
- * estilizado em traço dourado fino sobre o fundo dark, capturando
- * os traços marcantes — cabelo cacheado volumoso, cavanhaque
- * jovem, brinco/cruz, colar, camisa aberta, tatuagem blackwork no
- * antebraço — dentro da linguagem visual junguiana do site
- * (gold/dark, mandala atrás, símbolo ψ).
+ * PortraitHero usa a foto real (public/images/angelo-portrait.png),
+ * com mandala dourada girando atrás como halo, frame editorial
+ * com cantos accent e emblema ψ que cobre o canto inferior direito
+ * (esconde a marca d'água do Gemini ao mesmo tempo que decora).
  *
- * Variants:
- *   hero    — busto 3/4, ~3:4 ratio, com mandala atrás
- *   about   — meio-corpo, mais conteúdo (camisa, tatuagem visível)
- *   avatar  — só cabeça e ombros, círculo, ideal para Footer/Avatar
+ * PortraitAvatar mantém a versão SVG line-art para footer/avatar
+ * pequeno onde foto não cabe bem.
  */
 
 // ---------- Cabelo cacheado volumoso ----------
@@ -185,62 +182,97 @@ function HaloMandala({ stroke = '#B48C50', opacity = 0.18 }) {
 
 export function PortraitHero({ className = '', animate = true }) {
   return (
-    <div className={`relative w-full aspect-[3/4] ${className}`}>
-      {/* Mandala girando atrás */}
-      {animate ? (
+    <div className={`relative w-full aspect-[4/5] group ${className}`}>
+      {/* Mandala girando atrás (halo dourado fora da foto) */}
+      {animate && (
         <motion.svg
-          viewBox="0 0 230 320"
-          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 320 400"
+          className="absolute -inset-6 w-[calc(100%+3rem)] h-[calc(100%+3rem)] pointer-events-none"
           aria-hidden
           animate={{ rotate: 360 }}
           transition={{ duration: 240, repeat: Infinity, ease: 'linear' }}
-          style={{ transformOrigin: '50% 39%' }}
+          style={{ transformOrigin: '50% 50%' }}
         >
-          <HaloMandala opacity={0.13} />
+          <g fill="none" stroke="#B48C50" opacity="0.18">
+            <circle cx="160" cy="200" r="180" strokeWidth="0.4" />
+            <circle cx="160" cy="200" r="160" strokeWidth="0.3" />
+            <circle cx="160" cy="200" r="140" strokeWidth="0.5" />
+            {Array.from({ length: 24 }).map((_, i) => {
+              const a = (i * 15 * Math.PI) / 180;
+              return (
+                <line
+                  key={i}
+                  x1={160 + Math.cos(a) * 140}
+                  y1={200 + Math.sin(a) * 140}
+                  x2={160 + Math.cos(a) * 180}
+                  y2={200 + Math.sin(a) * 180}
+                  strokeWidth={i % 4 === 0 ? 0.6 : 0.25}
+                />
+              );
+            })}
+          </g>
         </motion.svg>
-      ) : (
-        <svg viewBox="0 0 230 320" className="absolute inset-0 w-full h-full" aria-hidden>
-          <HaloMandala opacity={0.13} />
-        </svg>
       )}
 
-      {/* ψ ambiente atrás da mandala */}
-      <span
-        className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2 font-serif italic text-[10rem] leading-none text-accent select-none pointer-events-none"
-        style={{ opacity: 0.05 }}
-        aria-hidden
-      >
-        ψ
-      </span>
+      {/* Frame da foto */}
+      <div className="relative w-full h-full overflow-hidden bg-bg-card border border-border-subtle transition-all duration-700 group-hover:border-accent/30 group-hover:shadow-xl group-hover:shadow-accent/5">
+        <img
+          src={img('/images/angelo-portrait.png')}
+          alt="Ângelo · retrato"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
+          style={{
+            objectPosition: 'center 25%',
+            // Crop sutil pra esconder a marca d'água do Gemini no canto inferior direito
+            clipPath: 'inset(0 3% 4% 0)',
+          }}
+        />
 
-      {/* Retrato */}
-      <svg
-        viewBox="0 0 230 320"
-        className="relative w-full h-full"
-        role="img"
-        aria-label="Retrato editorial de Ângelo — ilustração line-art em traço dourado"
-      >
-        <CurlyHair stroke="#B48C50" strokeWidth={1.1} />
-        <FaceFeatures stroke="#B48C50" strokeWidth={0.9} />
-        <NeckCollar stroke="#B48C50" />
-        <ShirtCollar stroke="#B48C50" strokeWidth={0.85} />
-      </svg>
+        {/* Gradient sutil dourado no hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-      {/* Tatuagem flutua à esquerda como acento opcional */}
-      <svg
-        viewBox="0 0 230 320"
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        aria-hidden
-      >
-        <TattooMark x={42} y={260} />
-      </svg>
+        {/* Vinheta inferior pra integrar com o resto da página */}
+        <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-bg/60 to-transparent pointer-events-none" />
+
+        {/* Emblema decorativo ψ no canto inferior direito —
+            cobre 100% qualquer resto da marca d'água que sobre */}
+        <div className="absolute bottom-3 right-3 w-12 h-12 flex items-center justify-center pointer-events-none">
+          <svg
+            width="48" height="48" viewBox="0 0 48 48"
+            className="absolute inset-0"
+            fill="none" stroke="#B48C50" strokeWidth="0.6"
+          >
+            <circle cx="24" cy="24" r="22" opacity="0.55" />
+            <circle cx="24" cy="24" r="17" opacity="0.4" strokeWidth="0.4" />
+            {Array.from({ length: 12 }).map((_, i) => {
+              const a = (i * 30 * Math.PI) / 180;
+              return (
+                <line
+                  key={i}
+                  x1={24 + Math.cos(a) * 17}
+                  y1={24 + Math.sin(a) * 17}
+                  x2={24 + Math.cos(a) * 22}
+                  y2={24 + Math.sin(a) * 22}
+                  strokeWidth={i % 3 === 0 ? 0.55 : 0.25}
+                  opacity="0.7"
+                />
+              );
+            })}
+          </svg>
+          <span
+            className="relative font-serif italic text-2xl text-accent leading-none"
+            style={{ textShadow: '0 1px 6px rgba(14,12,10,0.9)' }}
+          >
+            ψ
+          </span>
+        </div>
+      </div>
 
       {/* Cantos editoriais */}
-      <div className="absolute -top-1 -right-1 w-6 h-6 border-t border-r border-accent/20" />
-      <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b border-l border-accent/20" />
+      <div className="absolute -top-1 -right-1 w-6 h-6 border-t border-r border-accent/30 pointer-events-none" />
+      <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b border-l border-accent/30 pointer-events-none" />
 
       {/* Frase decorativa abaixo */}
-      <span className="absolute -bottom-6 left-5 font-mono text-[0.6rem] text-text-dim opacity-30 tracking-[0.18em]">
+      <span className="absolute -bottom-6 left-5 font-mono text-[0.6rem] text-text-dim opacity-40 tracking-[0.18em]">
         psychê · alma · borboleta
       </span>
     </div>
