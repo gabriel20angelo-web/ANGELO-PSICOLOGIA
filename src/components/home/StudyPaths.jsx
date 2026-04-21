@@ -1,11 +1,12 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
-import { trilhas, TRILHA_TONE } from '@/data/trilhas';
+import { trilhas as TRILHAS_DEFAULT, TRILHA_TONE } from '@/data/trilhas';
+import { getTrilhas } from '@/lib/sitedata';
 
 /**
  * StudyPaths — preview na home das 3 trilhas oficiais.
@@ -14,6 +15,13 @@ import { trilhas, TRILHA_TONE } from '@/data/trilhas';
 export default function StudyPaths() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [trilhas, setTrilhasList] = useState(TRILHAS_DEFAULT);
+
+  useEffect(() => {
+    setTrilhasList(getTrilhas());
+  }, []);
+
+  if (!trilhas || trilhas.length === 0) return null;
 
   return (
     <section ref={ref} className="py-24 md:py-32 px-6 md:px-12">
@@ -55,7 +63,7 @@ export default function StudyPaths() {
         </div>
 
         <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {trilhas.map((t, i) => {
+          {trilhas.slice(0, 3).map((t, i) => {
             const tone = TRILHA_TONE[t.archetype] || TRILHA_TONE.Self;
             return (
               <motion.div key={t.id} variants={fadeUp}>

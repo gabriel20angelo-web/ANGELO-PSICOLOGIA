@@ -1,33 +1,24 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import SectionLabel from '@/components/SectionLabel';
 import PullQuote from '@/components/ui/PullQuote';
 import DropCap from '@/components/ui/DropCap';
 import { fadeUp, stagger, slideInLeft, slideInRight } from '@/lib/constants';
-
-// Ficha de atuação — agora em formato de "selos" de identidade clínica.
-// Cada item vira uma linha com símbolo + label curto + descritor.
-const credentials = [
-  { mark: '◆', label: 'Estágio',     detail: 'Clínico · Associação Allos' },
-  { mark: '◇', label: 'Facilitação', detail: 'Liga de Psicologia Analítica · UNICAP' },
-  { mark: '◆', label: 'Formação',    detail: 'Intervisão e supervisão clínica' },
-  { mark: '◇', label: 'Método',      detail: 'Prática deliberada para psicoterapeutas' },
-  { mark: '◆', label: 'Atuação',     detail: 'Plantão psicológico' },
-];
-
-// Timeline horizontal de marcos — caminho de formação
-const milestones = [
-  { year: 'III',    label: 'Início clínico', detail: '3º período da graduação' },
-  { year: 'Allos',  label: 'Estágio',         detail: 'Processo seletivo' },
-  { year: 'UNICAP', label: 'Liga',            detail: 'Psicologia Analítica' },
-  { year: 'Hoje',   label: 'Clínica',         detail: 'Atendimento e ensino' },
-];
+import { getHomepage, DEFAULT_HOMEPAGE } from '@/lib/sitedata';
 
 export default function About() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
+  const [content, setContent] = useState(DEFAULT_HOMEPAGE.about);
+
+  useEffect(() => {
+    setContent(getHomepage().about);
+  }, []);
+
+  const credentials = content.credentials || [];
+  const milestones  = content.milestones || [];
 
   return (
     <section
@@ -57,7 +48,7 @@ export default function About() {
           variants={fadeUp}
           className="font-serif text-[clamp(2rem,4vw,3rem)] text-text-bright leading-[1.05] mb-14 max-w-3xl"
         >
-          Entre a <em className="italic text-accent">sombra</em> e a consciência
+          {content.title}
         </motion.h2>
 
         {/* Grid 5fr / 7fr — coluna de identidade + coluna de narrativa */}
@@ -106,21 +97,14 @@ export default function About() {
           {/* Coluna 2 — narrativa com drop cap + citação + timeline */}
           <motion.div variants={slideInRight}>
             <DropCap className="font-serif italic text-lg text-text-bright leading-[1.7] mb-6">
-              Atendo em clínica desde o terceiro período da graduação. Entrei na
-              Associação Allos por um processo seletivo rigoroso e, desde então,
-              minha prática foi moldada por supervisão constante, pesquisa e
-              centenas de horas de atendimento.
+              {content.paragraph1}
             </DropCap>
             <p className="text-[0.96rem] text-text leading-[1.85] mb-8">
-              Conduzo grupos de estudo com prática deliberada para estudantes e
-              psicólogos que querem atender melhor. Ministrei dezenas de horas
-              de formação, lidero turmas, conduzo intervisões e participo
-              de grupos pela Liga de Psicologia Analítica da UNICAP — sempre
-              voltando ao mesmo gesto: estudar, atender, supervisionar.
+              {content.paragraph2}
             </p>
 
-            <PullQuote cite="Carl Gustav Jung">
-              Quem olha para fora, sonha; quem olha para dentro, desperta.
+            <PullQuote cite={content.quoteAuthor}>
+              {content.quoteText}
             </PullQuote>
 
             {/* Timeline horizontal de marcos */}

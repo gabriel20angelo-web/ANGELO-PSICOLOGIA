@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { materials as defaultMaterials, comingSoon as defaultComingSoon, contentTypeLabels } from '@/data/materials';
 import BlogManager from '@/components/admin/BlogManager';
 import CourseManager from '@/components/admin/CourseManager';
+import TrilhasManager from '@/components/admin/TrilhasManager';
+import CartographyManager from '@/components/admin/CartographyManager';
+import ContentManager from '@/components/admin/ContentManager';
 
 // ─── Constants ───────────────────────────────────────────────────────
 const STORAGE_KEYS = {
@@ -728,6 +731,9 @@ function MobileBottomNav({ activeTab, setActiveTab, materialsList, testimonialsL
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: IconGrid },
     { id: 'materials', label: 'Materiais', icon: IconBook, badge: materialsList.length },
+    { id: 'trilhas', label: 'Trilhas', icon: IconBook },
+    { id: 'cartography', label: 'Cartografia', icon: IconGrid },
+    { id: 'content', label: 'Conteúdo', icon: IconPen },
     { id: 'blog', label: 'Blog', icon: IconPen },
     { id: 'courses', label: 'Cursos', icon: IconVideo },
     { id: 'testimonials', label: 'Depoimentos', icon: IconChat, badge: testimonialsList.length },
@@ -2571,6 +2577,9 @@ function AdminPanel() {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', badge: null },
     { id: 'materials', label: 'Materiais', badge: materialsList.length },
+    { id: 'trilhas', label: 'Trilhas', badge: null },
+    { id: 'cartography', label: 'Cartografia', badge: null },
+    { id: 'content', label: 'Conteúdo', badge: null },
     { id: 'blog', label: 'Blog', badge: null },
     { id: 'courses', label: 'Cursos', badge: null },
     { id: 'testimonials', label: 'Depoimentos', badge: testimonialsList.length },
@@ -2677,6 +2686,27 @@ function AdminPanel() {
               addLogEntry={addLogEntry}
               editMaterialId={editMaterialId}
               clearEditMaterialId={clearEditMaterialId}
+            />
+          )}
+          {activeTab === 'trilhas' && (
+            <TrilhasManager
+              key="trilhas"
+              addToast={addToast}
+              addLogEntry={addLogEntry}
+            />
+          )}
+          {activeTab === 'cartography' && (
+            <CartographyManager
+              key="cartography"
+              addToast={addToast}
+              addLogEntry={addLogEntry}
+            />
+          )}
+          {activeTab === 'content' && (
+            <ContentManager
+              key="content"
+              addToast={addToast}
+              addLogEntry={addLogEntry}
             />
           )}
           {activeTab === 'blog' && (

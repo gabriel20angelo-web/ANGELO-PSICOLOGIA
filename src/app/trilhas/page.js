@@ -1,16 +1,17 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PageHero from '@/components/ui/PageHero';
 import MandalaDivider from '@/components/ui/MandalaDivider';
-import { trilhas, TRILHA_TONE, STAGE_KIND_LABEL } from '@/data/trilhas';
+import { trilhas as TRILHAS_DEFAULT, TRILHA_TONE, STAGE_KIND_LABEL } from '@/data/trilhas';
 import { materials } from '@/data/materials';
 import { fadeUp, stagger } from '@/lib/constants';
 import { img } from '@/lib/basepath';
+import { getTrilhas } from '@/lib/sitedata';
 
 const materialMap = Object.fromEntries(materials.map((m) => [m.id, m]));
 
@@ -176,6 +177,12 @@ function TrilhaSection({ trilha, index }) {
 }
 
 export default function TrilhasPage() {
+  const [trilhas, setTrilhasList] = useState(TRILHAS_DEFAULT);
+
+  useEffect(() => {
+    setTrilhasList(getTrilhas());
+  }, []);
+
   return (
     <>
       <Navbar />

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import CursorGlow from '@/components/ui/CursorGlow';
 import { PortraitHero } from '@/components/ui/Portrait';
+import { getHomepage, DEFAULT_HOMEPAGE } from '@/lib/sitedata';
 
 function FloatingParticles() {
   const [particles, setParticles] = useState([]);
@@ -101,6 +102,12 @@ function MandalaBackdrop() {
 }
 
 export default function Hero() {
+  const [content, setContent] = useState(DEFAULT_HOMEPAGE.hero);
+
+  useEffect(() => {
+    setContent(getHomepage().hero);
+  }, []);
+
   const letterAnim = {
     hidden: { opacity: 0, y: 50 },
     visible: (i) => ({
@@ -114,7 +121,7 @@ export default function Hero() {
     }),
   };
 
-  const titleLetters = 'Psi'.split('');
+  const titleLetters = (content.titlePrefix || 'Psi').split('');
 
   return (
     <section className="relative min-h-screen flex items-center px-6 md:px-12 overflow-hidden pt-28 md:pt-20 pb-20">
@@ -155,7 +162,7 @@ export default function Hero() {
             className="font-mono text-[0.65rem] text-accent tracking-[0.32em] uppercase mb-8 flex items-center gap-3"
           >
             <span className="block w-8 h-px bg-accent/40" />
-            Psicologia Analítica · Jung
+            {content.eyebrow}
           </motion.p>
 
           {/* Animated title — display gigante: Psi (regular) + ângelo (italic accent) */}
@@ -182,7 +189,7 @@ export default function Hero() {
               transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="block text-[clamp(2.6rem,7vw,5.4rem)] -mt-2"
             >
-              <em className="italic text-accent">ângelo</em>
+              <em className="italic text-accent">{content.titleEmphasis || 'ângelo'}</em>
             </motion.span>
           </h1>
 
@@ -200,7 +207,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.9 }}
             className="font-serif italic text-accent-soft text-lg md:text-xl mb-8 tracking-wide"
           >
-            Nosce te ipsum
+            {content.tagline}
             <span className="ml-3 font-mono not-italic text-[0.65rem] text-text-dim/70 tracking-[0.25em] uppercase">
               · γνῶθι σεαυτόν
             </span>
@@ -212,9 +219,7 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 1 }}
             className="text-[0.98rem] text-text-dim max-w-md leading-[1.85] mb-10"
           >
-            Estudante de psicologia, estagiário clínico e futuro psicólogo.
-            Aqui você encontra quem eu sou, o que produzo e como a psicologia
-            analítica guia minha prática e meu olhar sobre o mundo.
+            {content.lead}
           </motion.p>
 
           {/* CTA hierárquico — primário sólido + secundário ghost + terciário texto */}

@@ -1,7 +1,8 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { getHomepage, DEFAULT_HOMEPAGE } from '@/lib/sitedata';
 
 /**
  * Prelude — frontispício entre Hero e About.
@@ -12,6 +13,11 @@ import { useRef } from 'react';
 export default function Prelude() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [content, setContent] = useState(DEFAULT_HOMEPAGE.prelude);
+
+  useEffect(() => {
+    setContent(getHomepage().prelude);
+  }, []);
 
   return (
     <section
@@ -43,11 +49,7 @@ export default function Prelude() {
 
         {/* Frontispício — italic, ritmado */}
         <p className="font-serif italic text-[clamp(1.15rem,1.7vw,1.45rem)] text-text-bright leading-[1.7] tracking-[0.005em]">
-          Este lugar é uma <em className="text-accent not-italic font-serif">oficina</em>,
-          não uma vitrine. Aqui se forja o trabalho de uma vida — entre o
-          consultório, a sala de aula e o caderno aberto. O que você encontra
-          adiante são fragmentos do mesmo gesto: <span className="text-accent">olhar para dentro</span> com
-          rigor, e devolver o que se viu em forma de estudo.
+          {content.body}
         </p>
 
         {/* Tagline grega — discreta, chancela */}
@@ -57,7 +59,7 @@ export default function Prelude() {
             className="font-serif italic text-accent text-base tracking-wide"
             style={{ opacity: 0.7 }}
           >
-            γνῶθι σεαυτόν
+            {content.tagline}
           </span>
           <span className="block w-12 h-px bg-accent/30" />
         </div>

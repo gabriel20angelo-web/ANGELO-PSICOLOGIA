@@ -1,13 +1,13 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
+import { getCartoNodes, getCartoEdges } from '@/lib/sitedata';
 
-// Nós da cartografia — conceitos junguianos centrais.
-// Coordenadas pensadas pra um grafo orgânico em viewBox 800x520.
-const NODES = [
+// Nós da cartografia — fallback default (admin pode editar via localStorage)
+const DEFAULT_NODES = [
   { id: 'self',      label: 'Self',                  x: 400, y: 260, size: 28, tone: 'accent',   axiom: 'centro arquetípico' },
   { id: 'ego',       label: 'Ego',                   x: 290, y: 200, size: 18, tone: 'bright',   axiom: 'sujeito da consciência' },
   { id: 'persona',   label: 'Persona',               x: 200, y: 130, size: 16, tone: 'bright',   axiom: 'máscara social' },
@@ -22,8 +22,8 @@ const NODES = [
   { id: 'mito',      label: 'Mito Pessoal',          x: 690, y: 450, size: 16, tone: 'citrinit', axiom: 'narrativa da alma' },
 ];
 
-// Arestas — relações conceituais.
-const EDGES = [
+// Arestas — fallback default
+const DEFAULT_EDGES = [
   ['self', 'ego'],
   ['self', 'individ'],
   ['self', 'incol'],
@@ -100,8 +100,15 @@ export default function Cartography() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
   const [hovered, setHovered] = useState(null);
+  const [nodes, setNodes] = useState(DEFAULT_NODES);
+  const [edges, setEdges] = useState(DEFAULT_EDGES);
 
-  const nodeMap = Object.fromEntries(NODES.map((n) => [n.id, n]));
+  useEffect(() => {
+    setNodes(getCartoNodes());
+    setEdges(getCartoEdges());
+  }, []);
+
+  const nodeMap = Object.fromEntries(nodes.map((n) => [n.id, n]));
   const hoveredNode = hovered ? nodeMap[hovered] : null;
 
   return (
@@ -184,9 +191,10 @@ export default function Cartography() {
 
             {/* Edges */}
             <g>
-              {EDGES.map(([fromId, toId], i) => {
+              {edges.map(([fromId, toId], i) => {
                 const a = nodeMap[fromId];
                 const b = nodeMap[toId];
+                if (!a || !b) return null;
                 const active = hovered === fromId || hovered === toId;
                 return (
                   <line
@@ -206,7 +214,7 @@ export default function Cartography() {
 
             {/* Nodes */}
             <g>
-              {NODES.map((n) => (
+              {nodes.map((n) => (
                 <Node
                   key={n.id}
                   node={n}
@@ -231,7 +239,7 @@ export default function Cartography() {
               </>
             ) : (
               <span className="font-mono text-[0.6rem] text-text-dim/70 tracking-[0.25em] uppercase">
-                Passe sobre um nó para ler seu axioma · {NODES.length} conceitos · {EDGES.length} relações
+                Passe sobre um nó para ler seu axioma · {nodes.length} conceitos · {edges.length} relações
               </span>
             )}
           </div>
