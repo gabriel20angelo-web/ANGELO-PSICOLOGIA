@@ -76,8 +76,8 @@ const DECOR_DOTS = [
 const SECONDARY_CONTACTS = [
   {
     label: 'Instagram',
-    value: '@angelo.psicologia',
-    href: '#',
+    value: '@psiangelo',
+    href: 'https://instagram.com/psiangelo',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="2" width="20" height="20" rx="5" />

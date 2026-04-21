@@ -29,7 +29,7 @@ export default function Footer({ showMaterialsCta = false }) {
         <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr] gap-12">
           <div>
             <p className="font-serif text-2xl text-text-bright mb-3">
-              Ângelo <em className="italic text-accent">Psicologia</em>
+              Psi<em className="italic text-accent">ângelo</em>
             </p>
             <p className="text-sm text-text-dim max-w-xs leading-7">
               Futuro psicólogo clínico de abordagem junguiana. Materiais de estudo,
@@ -74,7 +74,7 @@ export default function Footer({ showMaterialsCta = false }) {
           </div>
           <div className="pt-6 border-t border-border-subtle/60 flex flex-col sm:flex-row justify-between items-center gap-3">
             <p className="font-sans text-[0.7rem] text-text-dim opacity-50">
-              © {new Date().getFullYear()} Ângelo Psicologia
+              © {new Date().getFullYear()} Psiangelo
             </p>
             <p className="font-mono text-[0.6rem] text-text-dim/60 tracking-[0.25em] uppercase">
               Nosce te ipsum

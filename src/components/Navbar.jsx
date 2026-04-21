@@ -57,7 +57,7 @@ export default function Navbar() {
     >
       <Link href="/" className="flex items-center gap-2.5 font-serif text-text-bright text-lg tracking-wide group">
         <PsiGlyph className="w-5 h-5 text-accent group-hover:text-accent-bright transition-colors" />
-        Ângelo <span className="italic text-accent">Psicologia</span>
+        Psi<span className="italic text-accent">ângelo</span>
       </Link>
 
       <ul className="hidden md:flex items-center gap-10">

@@ -114,7 +114,7 @@ export default function Hero() {
     }),
   };
 
-  const titleLetters = 'Ângelo'.split('');
+  const titleLetters = 'Psi'.split('');
 
   return (
     <section className="relative min-h-screen flex items-center px-6 md:px-12 overflow-hidden pt-28 md:pt-20 pb-20">
@@ -158,7 +158,7 @@ export default function Hero() {
             Psicologia Analítica · Jung
           </motion.p>
 
-          {/* Animated title — display gigante */}
+          {/* Animated title — display gigante: Psi (regular) + ângelo (italic accent) */}
           <h1 className="font-serif font-normal text-text-bright leading-[0.95] mb-3 tracking-[-0.02em]">
             <span className="block text-[clamp(3.4rem,9vw,7rem)]">
               <span className="inline-flex overflow-hidden align-baseline">
@@ -182,7 +182,7 @@ export default function Hero() {
               transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="block text-[clamp(2.6rem,7vw,5.4rem)] -mt-2"
             >
-              <em className="italic text-accent">Psicologia</em>
+              <em className="italic text-accent">ângelo</em>
             </motion.span>
           </h1>
 

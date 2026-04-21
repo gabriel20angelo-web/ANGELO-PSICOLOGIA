@@ -448,8 +448,8 @@ function Catalog() {
                   Resumo completo, capítulo a capítulo ou inteiro — capítulos expandidos abaixo.
                 </p>
                 <div className="flex flex-col gap-4">
-                  {livros.map((mat) => (
-                    <MaterialCardFull key={mat.id} material={mat} />
+                  {livros.map((mat, i) => (
+                    <MaterialCardFull key={mat.id} material={mat} index={i} />
                   ))}
                 </div>
               </div>

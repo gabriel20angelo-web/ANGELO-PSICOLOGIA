@@ -1,5 +1,5 @@
 export const SITE = {
-  name: 'Ângelo Psicologia',
+  name: 'Psiangelo',
   tagline: 'Nosce te ipsum',
   description: 'Futuro psicólogo clínico · Psicologia Analítica · Jung',
 };
