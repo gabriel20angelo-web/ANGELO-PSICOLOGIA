@@ -3,7 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { getHomepage, DEFAULT_HOMEPAGE } from '@/lib/sitedata';
-import { BranchOrnament, GlyphTrio } from '@/components/illustrations';
+import { BranchOrnament, GlyphTrio, StarField } from '@/components/illustrations';
 
 /**
  * Prelude — frontispício entre Hero e About.
@@ -26,6 +26,9 @@ export default function Prelude() {
       className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden grain-medium"
       aria-label="Prelúdio"
     >
+      {/* Campo estelar ambiente */}
+      <StarField count={40} maxOpacity={0.55} accentChance={0.25} minSize={0.5} maxSize={2} />
+
       {/* ψ ambiente atrás */}
       <span
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-serif italic text-[18rem] md:text-[24rem] leading-none text-accent select-none pointer-events-none"

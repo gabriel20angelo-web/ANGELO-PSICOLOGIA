@@ -9,6 +9,95 @@
  */
 
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
+// ══════════════════════════════════════════════════════════════════
+// StarField — céu estrelado decorativo
+// Gera N estrelas em posições randômicas (após mount, hydration-safe)
+// com tamanhos variáveis, glow sutil e twinkle opcional.
+// Use com posição relativa no container pai. Aceita className.
+// ══════════════════════════════════════════════════════════════════
+export function StarField({
+  count = 50,
+  className = '',
+  minSize = 0.6,
+  maxSize = 2.4,
+  color = '#E8DDD0',
+  accentColor = '#B48C50',
+  accentChance = 0.22,
+  maxOpacity = 0.75,
+  twinkle = true,
+  glow = true,
+}) {
+  const [stars, setStars] = useState([]);
+
+  useEffect(() => {
+    setStars(
+      Array.from({ length: count }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: minSize + Math.random() * (maxSize - minSize),
+        color: Math.random() < accentChance ? accentColor : color,
+        duration: 2.6 + Math.random() * 4.4,
+        delay: Math.random() * 3,
+        baseOpacity: 0.2 + Math.random() * maxOpacity,
+      }))
+    );
+  }, [count, minSize, maxSize, color, accentColor, accentChance, maxOpacity]);
+
+  return (
+    <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`} aria-hidden>
+      {stars.map((s) => {
+        const style = {
+          left: `${s.x}%`,
+          top: `${s.y}%`,
+          width: s.size,
+          height: s.size,
+          background: s.color,
+          boxShadow: glow ? `0 0 ${s.size * 2.2}px ${s.color}` : undefined,
+        };
+        if (!twinkle) {
+          return (
+            <span
+              key={s.id}
+              className="absolute rounded-full"
+              style={{ ...style, opacity: s.baseOpacity }}
+            />
+          );
+        }
+        return (
+          <motion.span
+            key={s.id}
+            className="absolute rounded-full"
+            style={style}
+            animate={{ opacity: [s.baseOpacity * 0.25, s.baseOpacity, s.baseOpacity * 0.25] }}
+            transition={{
+              duration: s.duration,
+              delay: s.delay,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+// Variação "nebula" — poucas estrelas maiores, halo mais forte
+export function NebulaField({ count = 14, className = '' }) {
+  return (
+    <StarField
+      count={count}
+      className={className}
+      minSize={1.6}
+      maxSize={4}
+      accentChance={0.6}
+      maxOpacity={0.45}
+    />
+  );
+}
 
 // ══════════════════════════════════════════════════════════════════
 // AlchemyDivider — conjunção Sol e Lua

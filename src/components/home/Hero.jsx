@@ -6,6 +6,7 @@ import Link from 'next/link';
 import CursorGlow from '@/components/ui/CursorGlow';
 import { PortraitHero } from '@/components/ui/Portrait';
 import { getHomepage, DEFAULT_HOMEPAGE } from '@/lib/sitedata';
+import { StarField, NebulaField } from '@/components/illustrations';
 
 function FloatingParticles() {
   const [particles, setParticles] = useState([]);
@@ -131,6 +132,10 @@ export default function Hero() {
       {/* Ambient light effects */}
       <div className="ambient-glow absolute top-[12%] left-[35%] -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px]" />
       <div className="absolute bottom-0 left-0 w-full h-[300px] bg-gradient-to-t from-accent/[0.02] to-transparent pointer-events-none" />
+
+      {/* Céu estrelado — camada mais distante */}
+      <StarField count={70} maxOpacity={0.7} accentChance={0.22} />
+      <NebulaField count={8} />
 
       {/* Mandala translúcida no fundo */}
       <MandalaBackdrop />

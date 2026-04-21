@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { getBio, DEFAULT_BIO } from '@/lib/sitedata';
 import { img } from '@/lib/basepath';
+import { StarField, NebulaField } from '@/components/illustrations';
 
 /**
  * /bio — página mobile-first tipo linktree.
@@ -135,6 +136,12 @@ export default function BioPage() {
 
   return (
     <main className="min-h-screen bg-bg grain-soft relative overflow-hidden">
+      {/* Campo estelar — fundo fixo de ponta a ponta */}
+      <div className="fixed inset-0 pointer-events-none">
+        <StarField count={80} maxOpacity={0.7} accentChance={0.22} />
+        <NebulaField count={10} />
+      </div>
+
       {/* Ornamento de fundo — raízes sutis no topo */}
       <motion.svg
         className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none opacity-40"
@@ -154,7 +161,7 @@ export default function BioPage() {
         <circle cx="210" cy="210" r="210" fill="url(#bioBg)" />
       </motion.svg>
 
-      <div className="relative max-w-[460px] mx-auto px-6 py-12 sm:py-16 flex flex-col items-center">
+      <div className="relative z-10 max-w-[460px] mx-auto px-6 py-12 sm:py-16 flex flex-col items-center">
         {/* Avatar com halo mandala */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}

@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
-import { QuaternioSigil, BranchOrnament } from '@/components/illustrations';
+import { QuaternioSigil, BranchOrnament, StarField, NebulaField } from '@/components/illustrations';
 
 const WHATSAPP_URL = 'https://wa.me/5581987349114';
 
@@ -111,6 +111,10 @@ export default function ContactCTA() {
       ref={ref}
     >
       <div className="ambient-glow w-[700px] h-[700px] -top-40 left-1/2 -translate-x-1/2 opacity-60" />
+
+      {/* Campo estelar no convite final */}
+      <StarField count={55} maxOpacity={0.6} accentChance={0.3} />
+      <NebulaField count={5} />
 
       <motion.div
         initial="hidden"
