@@ -1,10 +1,44 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+
+// Scroll progress por post — barra fina no topo, abaixo da Navbar
+function ReadingProgressBar({ targetRef }) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const el = targetRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const start = rect.top + window.scrollY - window.innerHeight * 0.2;
+      const end = rect.top + window.scrollY + rect.height - window.innerHeight * 0.8;
+      const span = Math.max(end - start, 1);
+      const cur = Math.min(Math.max((window.scrollY - start) / span, 0), 1);
+      setProgress(cur);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [targetRef]);
+
+  return (
+    <div className="fixed top-[60px] left-0 right-0 h-[2px] bg-bg-warm/40 z-[400] pointer-events-none">
+      <div
+        className="h-full bg-gradient-to-r from-accent via-accent-bright to-accent origin-left"
+        style={{ width: `${progress * 100}%`, transition: 'width 80ms linear' }}
+      />
+    </div>
+  );
+}
 
 const STORAGE_KEY = 'angelo_admin_blog';
 const SERIES_STORAGE_KEY = 'angelo_admin_blog_series';
@@ -134,47 +168,79 @@ function BlogPostView({ post, allPosts, seriesList, onBack, onNavigate }) {
   const readTime = calculateReadingTime(post.content_html);
   const headings = extractHeadings(post.content_html);
   const htmlWithIds = addHeadingIds(post.content_html);
+  const articleRef = useRef(null);
 
   return (
-    <motion.article initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-      className="max-w-[760px] mx-auto">
-      <button onClick={onBack}
-        className="flex items-center gap-2 text-xs font-sans text-text-dim hover:text-accent transition-colors uppercase tracking-widest mb-8">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5" /><polyline points="12 19 5 12 12 5" /></svg>
-        Voltar ao blog
-      </button>
-
-      <div className="flex items-center gap-4 mb-4 flex-wrap">
-        <time className="text-xs uppercase tracking-widest text-text-dim font-sans">{formatDate(post.updated_at)}</time>
-        <span className="text-xs text-text-dim font-sans">{readTime} min de leitura</span>
-        {post.tags && post.tags.map((tag) => (
-          <span key={tag} className="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full font-sans">{tag}</span>
-        ))}
-      </div>
-
-      <h1 className="font-serif text-3xl md:text-4xl text-text-bright mb-4 leading-tight">{post.title}</h1>
-
-      {post.author && (
-        <p className="text-sm text-text-dim font-sans mb-8">Por <span className="text-text">{post.author}</span></p>
-      )}
-
-      {post.featured_image && (
-        <div className="aspect-[16/9] rounded-xl overflow-hidden mb-10 border border-border-subtle">
-          <img src={post.featured_image} alt={post.featured_image_alt || post.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-        </div>
-      )}
-
-      <SeriesNav currentPost={post} allPosts={allPosts} seriesList={seriesList} onNavigate={onNavigate} />
-      <TableOfContents headings={headings} />
-
-      <div className="blog-content" dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
-
-      <div className="mt-16 pt-8 border-t border-border-subtle flex justify-between items-center">
-        <button onClick={onBack} className="text-xs font-sans text-accent hover:text-text-bright transition-colors uppercase tracking-widest">
-          &larr; Voltar ao blog
+    <>
+      <ReadingProgressBar targetRef={articleRef} />
+      <motion.article
+        ref={articleRef}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-[760px] mx-auto"
+      >
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-xs font-sans text-text-dim hover:text-accent transition-colors uppercase tracking-widest mb-8"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 12H5" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Voltar ao blog
         </button>
-      </div>
-    </motion.article>
+
+        <div className="flex items-center gap-4 mb-4 flex-wrap">
+          <time className="text-xs uppercase tracking-widest text-text-dim font-sans">{formatDate(post.updated_at)}</time>
+          <span className="text-xs text-text-dim font-sans">{readTime} min de leitura</span>
+          {post.tags && post.tags.map((tag) => (
+            <span key={tag} className="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full font-sans">
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <h1 className="font-serif text-3xl md:text-5xl text-text-bright mb-4 leading-[1.05] tracking-[-0.01em]">
+          {post.title}
+        </h1>
+
+        {post.author && (
+          <p className="text-sm text-text-dim font-sans mb-8">
+            Por <span className="text-text">{post.author}</span>
+          </p>
+        )}
+
+        {post.featured_image && (
+          <div className="aspect-[16/9] rounded-xl overflow-hidden mb-10 border border-border-subtle">
+            <img
+              src={post.featured_image}
+              alt={post.featured_image_alt || post.title}
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        )}
+
+        <SeriesNav currentPost={post} allPosts={allPosts} seriesList={seriesList} onNavigate={onNavigate} />
+        <TableOfContents headings={headings} />
+
+        {/* blog-post-body aplica drop cap no primeiro <p> via CSS */}
+        <div
+          className="blog-content blog-post-body"
+          dangerouslySetInnerHTML={{ __html: htmlWithIds }}
+        />
+
+        <div className="mt-16 pt-8 border-t border-border-subtle flex justify-between items-center">
+          <button
+            onClick={onBack}
+            className="text-xs font-sans text-accent hover:text-text-bright transition-colors uppercase tracking-widest"
+          >
+            &larr; Voltar ao blog
+          </button>
+        </div>
+      </motion.article>
+    </>
   );
 }
 

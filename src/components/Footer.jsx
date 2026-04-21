@@ -59,13 +59,27 @@ export default function Footer({ showMaterialsCta = false }) {
           </div>
         </div>
 
-        <div className="mt-16 pt-6 border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="font-sans text-[0.7rem] text-text-dim opacity-50">
-            © {new Date().getFullYear()} Ângelo Psicologia
-          </p>
-          <span className="font-serif italic text-sm text-accent opacity-20">
-            γνῶθι σεαυτόν
-          </span>
+        <div className="mt-16 pt-10 border-t border-border-subtle flex flex-col gap-8">
+          {/* Tagline grega promovida — frontispício do rodapé */}
+          <div className="flex flex-col items-center gap-2 text-center">
+            <span
+              className="font-serif italic text-2xl md:text-3xl text-accent leading-none tracking-wide"
+              style={{ opacity: 0.6 }}
+            >
+              γνῶθι σεαυτόν
+            </span>
+            <span className="font-mono text-[0.6rem] text-text-dim tracking-[0.3em] uppercase opacity-60">
+              conhece-te a ti mesmo · Delfos
+            </span>
+          </div>
+          <div className="pt-6 border-t border-border-subtle/60 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p className="font-sans text-[0.7rem] text-text-dim opacity-50">
+              © {new Date().getFullYear()} Ângelo Psicologia
+            </p>
+            <p className="font-mono text-[0.6rem] text-text-dim/60 tracking-[0.25em] uppercase">
+              Nosce te ipsum
+            </p>
+          </div>
         </div>
       </div>
     </footer>

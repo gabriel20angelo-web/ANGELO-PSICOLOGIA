@@ -5,81 +5,89 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
 
-const faqs = [
+// FAQs agrupadas em 3 blocos editoriais: Entrega · Catálogo · Conteúdo
+const faqGroups = [
   {
-    question: 'Como recebo os materiais após a compra?',
-    answer:
-      'Após a confirmação do pagamento, os materiais são enviados diretamente pelo WhatsApp e/ou e-mail. Todos os arquivos são em formato PDF digital, prontos para leitura imediata no celular, tablet ou computador.',
+    id: 'entrega',
+    label: 'Entrega',
+    blurb: 'Como o material chega até você.',
+    items: [
+      {
+        question: 'Como recebo os materiais após a compra?',
+        answer:
+          'Após a confirmação do pagamento, os materiais são enviados diretamente pelo WhatsApp e/ou e-mail. Todos os arquivos são em formato PDF digital, prontos para leitura imediata no celular, tablet ou computador.',
+      },
+      {
+        question: 'Os mapas mentais são editáveis?',
+        answer:
+          'Os mapas mentais são entregues em formato PDF, otimizados tanto para estudo digital quanto para impressão. O layout foi pensado para facilitar a visualização das conexões entre conceitos, funcionando como um guia visual de estudo.',
+      },
+      {
+        question: 'Tem desconto para compra de vários materiais?',
+        answer:
+          'Sim! Ofereço condições especiais para quem deseja adquirir mais de um material. Entre em contato pelo WhatsApp para combinarmos um pacote personalizado de acordo com suas necessidades de estudo.',
+      },
+    ],
   },
   {
-    question: 'Os materiais são baseados em quais autores?',
-    answer:
-      'Os materiais são elaborados com base nas Obras Completas de C. G. Jung, em autores pós-junguianos consagrados e na experiência de prática clínica e supervisão. Cada resumo e mapa mental passa por revisão cuidadosa para garantir fidelidade conceitual.',
+    id: 'catalogo',
+    label: 'Catálogo',
+    blurb: 'O que existe e o que está por vir.',
+    items: [
+      {
+        question: 'Posso solicitar um material sobre um tema específico?',
+        answer:
+          'Com certeza! Estou sempre aberto a sugestões e pedidos. Se existe um tema da psicologia analítica ou da prática clínica que você gostaria de ver em formato de resumo ou mapa mental, entre em contato e conversamos sobre a viabilidade.',
+      },
+      {
+        question: 'Posso usar os materiais para estudar para concursos?',
+        answer:
+          'Sim! O conteúdo é abrangente e cobre os principais conceitos exigidos em provas e concursos da área de psicologia. Os resumos são especialmente úteis para revisão rápida e fixação de conteúdo.',
+      },
+    ],
   },
   {
-    question: 'Posso usar os materiais para estudar para concursos?',
-    answer:
-      'Sim! O conteúdo é abrangente e cobre os principais conceitos exigidos em provas e concursos da área de psicologia. Os resumos são especialmente úteis para revisão rápida e fixação de conteúdo.',
-  },
-  {
-    question: 'Os mapas mentais são editáveis?',
-    answer:
-      'Os mapas mentais são entregues em formato PDF, otimizados tanto para estudo digital quanto para impressão. O layout foi pensado para facilitar a visualização das conexões entre conceitos, funcionando como um guia visual de estudo.',
-  },
-  {
-    question: 'Tem desconto para compra de vários materiais?',
-    answer:
-      'Sim! Ofereço condições especiais para quem deseja adquirir mais de um material. Entre em contato pelo WhatsApp para combinarmos um pacote personalizado de acordo com suas necessidades de estudo.',
-  },
-  {
-    question: 'Qual a diferença entre resumo e mapa mental?',
-    answer:
-      'O resumo é uma síntese textual do conteúdo — organizado em tópicos, com as ideias principais explicadas de forma clara e objetiva. Já o mapa mental é um diagrama visual que conecta conceitos-chave, facilitando a memorização e a compreensão das relações entre os temas.',
-  },
-  {
-    question: 'Posso solicitar um material sobre um tema específico?',
-    answer:
-      'Com certeza! Estou sempre aberto a sugestões e pedidos. Se existe um tema da psicologia analítica ou da prática clínica que você gostaria de ver em formato de resumo ou mapa mental, entre em contato e conversamos sobre a viabilidade.',
+    id: 'conteudo',
+    label: 'Conteúdo',
+    blurb: 'Sobre a profundidade e o método.',
+    items: [
+      {
+        question: 'Os materiais são baseados em quais autores?',
+        answer:
+          'Os materiais são elaborados com base nas Obras Completas de C. G. Jung, em autores pós-junguianos consagrados e na experiência de prática clínica e supervisão. Cada resumo e mapa mental passa por revisão cuidadosa para garantir fidelidade conceitual.',
+      },
+      {
+        question: 'Qual a diferença entre resumo e mapa mental?',
+        answer:
+          'O resumo é uma síntese textual do conteúdo — organizado em tópicos, com as ideias principais explicadas de forma clara e objetiva. Já o mapa mental é um diagrama visual que conecta conceitos-chave, facilitando a memorização e a compreensão das relações entre os temas.',
+      },
+    ],
   },
 ];
 
-function FAQItem({ item, index, isOpen, onToggle }) {
+function FAQItem({ item, isOpen, onToggle }) {
   return (
-    <motion.div
-      variants={fadeUp}
-      className="border-b border-border-subtle"
-    >
+    <div className="border-b border-border-subtle">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between py-5 md:py-6 text-left group cursor-pointer"
+        className="w-full flex items-start justify-between py-5 text-left group cursor-pointer gap-4"
       >
         <span
-          className={`font-serif text-[1rem] md:text-[1.1rem] leading-snug pr-4 transition-colors duration-300 ${
+          className={`font-serif text-[0.98rem] md:text-[1.05rem] leading-snug pr-2 transition-colors duration-300 flex-1 ${
             isOpen ? 'text-accent' : 'text-text-bright group-hover:text-accent'
           }`}
         >
           {item.question}
         </span>
         <span
-          className={`flex-shrink-0 w-8 h-8 flex items-center justify-center border transition-all duration-300 ${
+          className={`flex-shrink-0 w-7 h-7 flex items-center justify-center border transition-all duration-300 ${
             isOpen
-              ? 'border-accent/30 text-accent rotate-45'
+              ? 'border-accent/40 text-accent rotate-45'
               : 'border-border-subtle text-text-dim group-hover:border-border-hover group-hover:text-accent'
           }`}
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            className="transition-transform duration-300"
-          >
-            <path
-              d="M7 1V13M1 7H13"
-              stroke="currentColor"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1V13M1 7H13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
         </span>
       </button>
@@ -93,46 +101,78 @@ function FAQItem({ item, index, isOpen, onToggle }) {
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <p className="text-[0.9rem] text-text leading-[1.85] pb-6 pr-12">
+            <p className="text-[0.88rem] text-text leading-[1.85] pb-5 pr-10">
               {item.answer}
             </p>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState(null);
+  // estado: chave única "groupId:itemIndex"
+  const [openKey, setOpenKey] = useState(null);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="faq" className="py-24 md:py-32 px-6 md:px-12 section-border-t" ref={ref}>
+    <section
+      id="faq"
+      className="py-24 md:py-32 px-6 md:px-12 section-border-t"
+      ref={ref}
+    >
       <motion.div
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
         variants={stagger}
-        className="max-w-[800px] mx-auto"
+        className="max-w-[1180px] mx-auto"
       >
         <SectionLabel label="Dúvidas" />
         <motion.h2
           variants={fadeUp}
-          className="font-serif text-[clamp(1.8rem,3.5vw,2.6rem)] text-text-bright leading-tight mb-12"
+          className="font-serif text-[clamp(2rem,4vw,3rem)] text-text-bright leading-[1.05] mb-3 max-w-3xl"
         >
           Perguntas <em className="italic text-accent">frequentes</em>
         </motion.h2>
+        <motion.p
+          variants={fadeUp}
+          className="text-[0.95rem] text-text-dim leading-[1.85] max-w-xl mb-14"
+        >
+          Organizadas em três frentes — entrega, catálogo e conteúdo. Clique em
+          qualquer pergunta para expandir.
+        </motion.p>
 
-        <div className="border-t border-border-subtle">
-          {faqs.map((item, i) => (
-            <FAQItem
-              key={i}
-              item={item}
-              index={i}
-              isOpen={openIndex === i}
-              onToggle={() => setOpenIndex(openIndex === i ? null : i)}
-            />
+        {/* 3 grupos em 2 colunas: a primeira larga (Entrega) ocupa coluna 1
+            inteira em desktop, as duas menores ficam empilhadas na coluna 2 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-10">
+          {faqGroups.map((group, gi) => (
+            <motion.section
+              key={group.id}
+              variants={fadeUp}
+              className={gi === 0 ? 'lg:row-span-2' : ''}
+            >
+              <header className="mb-5 pb-4 border-b border-accent/20">
+                <p className="meta-caps-accent mb-1.5">{group.label}</p>
+                <p className="font-serif italic text-text-dim text-[0.92rem]">
+                  {group.blurb}
+                </p>
+              </header>
+              <div>
+                {group.items.map((item, i) => {
+                  const key = `${group.id}:${i}`;
+                  return (
+                    <FAQItem
+                      key={key}
+                      item={item}
+                      isOpen={openKey === key}
+                      onToggle={() => setOpenKey(openKey === key ? null : key)}
+                    />
+                  );
+                })}
+              </div>
+            </motion.section>
           ))}
         </div>
       </motion.div>

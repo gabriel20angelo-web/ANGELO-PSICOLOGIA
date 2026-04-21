@@ -3,11 +3,21 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+const PsiGlyph = ({ className = '' }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="0.7">
+    <circle cx="12" cy="12" r="10" opacity="0.35" />
+    <circle cx="12" cy="12" r="6" opacity="0.55" />
+    <path d="M12 4v16M6.5 8.5c0 3 2 5 5.5 5s5.5-2 5.5-5" strokeWidth="1" opacity="0.9" />
+  </svg>
+);
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => {
@@ -27,6 +37,12 @@ export default function Navbar() {
     { href: '/blog', label: 'Blog' },
   ];
 
+  const isActive = (href) => {
+    if (href === '/') return pathname === '/';
+    if (href.startsWith('/#')) return false;
+    return pathname.startsWith(href);
+  };
+
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
@@ -38,33 +54,36 @@ export default function Navbar() {
           : 'py-5 px-6 md:px-12'
       }`}
     >
-      <Link href="/" className="font-serif text-text-bright text-lg tracking-wide">
+      <Link href="/" className="flex items-center gap-2.5 font-serif text-text-bright text-lg tracking-wide group">
+        <PsiGlyph className="w-5 h-5 text-accent group-hover:text-accent-bright transition-colors" />
         Ângelo <span className="italic text-accent">Psicologia</span>
       </Link>
 
-      {/* Desktop nav */}
       <ul className="hidden md:flex items-center gap-10">
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className="font-sans text-[0.72rem] font-medium text-text-dim uppercase tracking-[0.18em] hover:text-accent transition-colors link-underline"
-            >
-              {link.label}
-            </Link>
-          </li>
-        ))}
-        <li>
-          <Link
-            href="/materiais"
-            className="font-sans text-[0.68rem] font-semibold uppercase tracking-[0.15em] text-bg bg-accent px-5 py-2.5 hover:bg-text-bright transition-all hover:-translate-y-0.5"
-          >
-            Quero os materiais
-          </Link>
-        </li>
+        {links.map((link) => {
+          const active = isActive(link.href);
+          return (
+            <li key={link.href} className="relative">
+              <Link
+                href={link.href}
+                className={`font-sans text-[0.72rem] font-medium uppercase tracking-[0.18em] transition-colors ${
+                  active ? 'text-accent' : 'text-text-dim hover:text-accent'
+                }`}
+              >
+                {link.label}
+              </Link>
+              {active && (
+                <motion.span
+                  layoutId="nav-active"
+                  className="absolute -bottom-1.5 left-0 right-0 h-px bg-accent"
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                />
+              )}
+            </li>
+          );
+        })}
       </ul>
 
-      {/* Mobile hamburger */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
         className="md:hidden flex flex-col gap-1.5 p-2"
@@ -84,7 +103,6 @@ export default function Navbar() {
         />
       </button>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -99,24 +117,18 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="font-sans text-sm text-text-dim hover:text-accent transition-colors"
+                  className={`font-sans text-sm transition-colors ${
+                    isActive(link.href) ? 'text-accent' : 'text-text-dim hover:text-accent'
+                  }`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/materiais"
-                onClick={() => setMobileOpen(false)}
-                className="font-sans text-sm font-semibold text-bg bg-accent px-5 py-3 text-center"
-              >
-                Quero os materiais
-              </Link>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Scroll progress bar */}
       {scrolled && (
         <motion.div
           className="absolute bottom-0 left-0 h-px bg-accent/40"

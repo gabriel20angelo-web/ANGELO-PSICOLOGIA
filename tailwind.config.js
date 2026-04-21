@@ -24,7 +24,12 @@ module.exports = {
         accent: {
           DEFAULT: '#B48C50',
           soft: '#9A7A48',
+          bright: '#D4A853',
         },
+        nigredo: '#1C1410',
+        albedo: '#E8DDD0',
+        citrinit: '#D4A853',
+        rubedo: '#8B3A2E',
       },
       fontFamily: {
         serif: ['"DM Serif Display"', 'Georgia', 'serif'],
