@@ -232,10 +232,172 @@ export default function CursosPage() {
 }
 
 /* ========================================
+   FEATURED COURSE HERO — fullbleed do curso destaque
+======================================== */
+function FeaturedCourseHero({ course, progress, onSelect }) {
+  const totalLessons = getTotalLessons(course);
+  const totalMinutes = getTotalDuration(course);
+  const percent = calculateCourseProgress(course, progress);
+  const hasStarted = Object.keys(progress).length > 0;
+
+  return (
+    <section className="relative h-[60vh] md:h-[72vh] min-h-[480px] overflow-hidden">
+      {course.thumbnail ? (
+        <img
+          src={course.thumbnail}
+          alt={course.title}
+          className="absolute inset-0 w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-bg-warm via-bg-card to-bg" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/80 to-bg/30" />
+      <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-bg/85 to-transparent" />
+
+      {/* Mandala translúcida */}
+      <motion.svg
+        className="absolute -right-32 -top-32 pointer-events-none"
+        width="560" height="560" viewBox="0 0 560 560"
+        style={{ opacity: 0.07 }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 220, repeat: Infinity, ease: 'linear' }}
+      >
+        <g fill="none" stroke="#B48C50" strokeWidth="0.5">
+          <circle cx="280" cy="280" r="270" />
+          <circle cx="280" cy="280" r="200" />
+          <circle cx="280" cy="280" r="130" />
+          <circle cx="280" cy="280" r="60" />
+          {Array.from({ length: 16 }).map((_, i) => {
+            const a = (i * 22.5 * Math.PI) / 180;
+            return (
+              <line key={i}
+                x1={280 + Math.cos(a) * 60}
+                y1={280 + Math.sin(a) * 60}
+                x2={280 + Math.cos(a) * 270}
+                y2={280 + Math.sin(a) * 270}
+                strokeWidth={i % 4 === 0 ? 0.6 : 0.3}
+              />
+            );
+          })}
+        </g>
+      </motion.svg>
+
+      <div className="absolute inset-0 flex items-end pb-12 md:pb-16">
+        <div className="max-w-[1180px] w-full mx-auto px-6 md:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-3xl"
+          >
+            <p className="font-mono text-[0.6rem] text-accent tracking-[0.32em] uppercase mb-4 flex items-center gap-3">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3 9h9l-7.5 5.5L19 22l-7-5-7 5 2.5-5.5L0 11h9z" />
+              </svg>
+              Curso em destaque
+            </p>
+
+            <h1 className="font-serif text-[clamp(2.4rem,6vw,5rem)] text-text-bright leading-[1] tracking-[-0.015em] mb-5">
+              {course.title}
+            </h1>
+
+            {course.description && (
+              <p className="font-serif italic text-text-dim text-lg max-w-2xl leading-relaxed mb-6 line-clamp-3">
+                {course.description}
+              </p>
+            )}
+
+            {/* Meta strip */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8">
+              {course.category && (
+                <span className="font-mono text-[0.55rem] tracking-[0.22em] uppercase px-2 py-1 border border-accent/30 text-accent bg-accent/[0.08]">
+                  {course.category}
+                </span>
+              )}
+              {totalLessons > 0 && (
+                <span className="font-mono text-[0.6rem] text-text-dim tracking-[0.18em] uppercase">
+                  {totalLessons} aulas
+                </span>
+              )}
+              {totalMinutes > 0 && (
+                <span className="font-mono text-[0.6rem] text-text-dim tracking-[0.18em] uppercase">
+                  {formatDuration(totalMinutes)}
+                </span>
+              )}
+              {hasStarted && (
+                <span className="font-mono text-[0.6rem] text-accent tracking-[0.18em] uppercase">
+                  {percent}% concluído
+                </span>
+              )}
+            </div>
+
+            <button
+              onClick={() => onSelect(course)}
+              className="group relative inline-flex items-center gap-3 px-8 py-4 font-sans text-[0.75rem] font-semibold tracking-[0.18em] uppercase text-bg bg-accent hover:bg-text-bright transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/20 overflow-hidden"
+            >
+              <span className="relative z-10">
+                {hasStarted ? 'Continuar curso' : 'Acessar curso'}
+              </span>
+              <svg className="relative z-10" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ========================================
+   CONTINUAR ASSISTINDO — cursos com progresso parcial
+======================================== */
+function ContinueWatching({ courses, progressMap, onSelect }) {
+  const inProgress = courses.filter((c) => {
+    const p = progressMap[c.id] || {};
+    if (Object.keys(p).length === 0) return false;
+    const pct = calculateCourseProgress(c, p);
+    return pct > 0 && pct < 100;
+  });
+
+  if (inProgress.length === 0) return null;
+
+  return (
+    <section className="max-w-[1280px] mx-auto px-6 md:px-12 mb-14">
+      <header className="flex items-baseline gap-4 mb-6">
+        <span className="font-mono text-[0.62rem] text-accent tracking-[0.25em] uppercase">
+          Continuar assistindo
+        </span>
+        <span className="flex-1 h-px bg-border-subtle" />
+        <span className="font-mono text-[0.55rem] text-text-dim/60 tracking-[0.2em] uppercase">
+          {inProgress.length} {inProgress.length === 1 ? 'curso' : 'cursos'}
+        </span>
+      </header>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {inProgress.map((course) => {
+          const pct = calculateCourseProgress(course, progressMap[course.id] || {});
+          return (
+            <CourseCardComponent
+              key={course.id}
+              course={course}
+              onClick={() => onSelect(course)}
+              progress={pct}
+              variant="compact"
+            />
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/* ========================================
    VIEW 1: COURSE LISTING
 ======================================== */
 function CourseListing({ courses, categories, progressMap, onNavigate }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('todos');
 
   const publishedCourses = useMemo(
     () => courses.filter(c => c.status === 'published'),
@@ -247,15 +409,43 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
     [publishedCourses]
   );
 
-  const searchResults = useMemo(() => {
-    if (!searchQuery) return null;
-    return publishedCourses.filter(course =>
-      course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [publishedCourses, searchQuery]);
+  const heroCourse = featuredCourses[0] || null;
+  const otherFeatured = featuredCourses.slice(1);
 
-  // Group courses by category for carousels
+  // Categorias derivadas — todas as únicas + 'todos'
+  const allCategories = useMemo(() => {
+    const set = new Set();
+    publishedCourses.forEach((c) => {
+      if (c.category) set.add(c.category);
+    });
+    return Array.from(set).sort();
+  }, [publishedCourses]);
+
+  const handleSelect = (course) => {
+    onNavigate(`/cursos?curso=${course.slug || course.id}`);
+  };
+
+  const getProgressPct = (courseId) => {
+    const progress = progressMap[courseId] || {};
+    const course = courses.find(c => c.id === courseId);
+    if (!course) return 0;
+    return calculateCourseProgress(course, progress);
+  };
+
+  // Cursos filtrados (search + categoria)
+  const filteredCourses = useMemo(() => {
+    return publishedCourses.filter((c) => {
+      if (activeCategory !== 'todos' && c.category !== activeCategory) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        const hay = [c.title, c.description].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [publishedCourses, activeCategory, searchQuery]);
+
+  // Group courses by category for carousels (apenas quando sem filtro/search)
   const categoryGroups = useMemo(() => {
     const nonFeatured = publishedCourses.filter(c => !c.featured);
     const groups = {};
@@ -267,95 +457,161 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
     return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
   }, [publishedCourses]);
 
-  const getProgressPct = (courseId) => {
-    const progress = progressMap[courseId] || {};
-    const course = courses.find(c => c.id === courseId);
-    if (!course) return 0;
-    return calculateCourseProgress(course, progress);
-  };
-
-  const handleSelect = (course) => {
-    onNavigate(`/cursos?curso=${course.slug || course.id}`);
-  };
+  const isFiltering = searchQuery !== '' || activeCategory !== 'todos';
 
   return (
     <main className="min-h-screen">
-      <PageHero
-        meta={[
-          ['VOL.', 'II · Formação'],
-          ['CAMPO', 'Cursos · Aulas em vídeo'],
-          ['MÉTODO', 'Prática deliberada'],
-        ]}
-        title="Cursos"
-        emphasis="& formação"
-        kicker="Aprofunde-se em psicologia analítica"
-        lead="Cursos pensados para a prática clínica e o desenvolvimento pessoal — assista no seu ritmo, marque progresso, retome de onde parou."
-      />
-
-      {/* Search — agora editorial, sem rounded gigante */}
-      <section className="max-w-[1180px] mx-auto px-6 md:px-12 mb-12">
-        <div className="relative border-b border-border-subtle hover:border-border-hover focus-within:border-accent/50 transition-colors">
-          <svg
-            className="absolute left-1 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Buscar cursos…"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-4 bg-transparent text-text-bright placeholder:text-text-dim/50 focus:outline-none font-serif italic text-base"
+      {/* Hero — featured fullbleed se houver, senão PageHero */}
+      {heroCourse ? (
+        <>
+          <div className="pt-16" />
+          <FeaturedCourseHero
+            course={heroCourse}
+            progress={progressMap[heroCourse.id] || {}}
+            onSelect={handleSelect}
           />
-        </div>
-      </section>
+        </>
+      ) : (
+        <PageHero
+          meta={[
+            ['VOL.', 'II · Formação'],
+            ['CAMPO', 'Cursos · Aulas em vídeo'],
+            ['MÉTODO', 'Prática deliberada'],
+          ]}
+          title="Cursos"
+          emphasis="& formação"
+          kicker="Aprofunde-se em psicologia analítica"
+          lead="Cursos pensados para a prática clínica e o desenvolvimento pessoal — assista no seu ritmo, marque progresso, retome de onde parou."
+        />
+      )}
 
-      {/* Search Results */}
-      {searchResults !== null ? (
-        <section className="max-w-[1100px] mx-auto px-6 md:px-12 pb-24">
-          <p className="text-xs text-text-dim font-sans mb-6">{searchResults.length} resultado{searchResults.length !== 1 ? 's' : ''}</p>
-          {searchResults.length > 0 ? (
+      {/* Continuar assistindo — só se houver progresso */}
+      <div className="pt-12">
+        <ContinueWatching
+          courses={publishedCourses}
+          progressMap={progressMap}
+          onSelect={handleSelect}
+        />
+      </div>
+
+      {/* Filtros: categoria + busca */}
+      {publishedCourses.length > 0 && (
+        <section className="max-w-[1280px] mx-auto px-6 md:px-12 mb-10">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-6 border-b border-border-subtle">
+            {/* Filtros de categoria */}
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="font-mono text-[0.55rem] text-text-dim/70 tracking-[0.22em] uppercase mr-2">
+                Categoria
+              </span>
+              <button
+                onClick={() => setActiveCategory('todos')}
+                className={`px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.18em] uppercase transition-all ${
+                  activeCategory === 'todos'
+                    ? 'bg-accent text-bg'
+                    : 'border border-border-subtle text-text-dim hover:border-accent/40 hover:text-accent'
+                }`}
+              >
+                Todas
+              </button>
+              {allCategories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.18em] uppercase transition-all ${
+                    activeCategory === cat
+                      ? 'bg-accent text-bg'
+                      : 'border border-border-subtle text-text-dim hover:border-accent/40 hover:text-accent'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Search */}
+            <div className="relative border-b border-border-subtle hover:border-border-hover focus-within:border-accent/50 transition-colors min-w-[220px]">
+              <svg
+                className="absolute left-1 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Buscar…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-2 py-2.5 bg-transparent text-text-bright placeholder:text-text-dim/50 focus:outline-none font-serif italic text-base"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Conteúdo principal */}
+      {isFiltering ? (
+        // Grid de resultados filtrados
+        <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-24">
+          <p className="font-mono text-[0.6rem] text-text-dim tracking-[0.2em] uppercase mb-6">
+            {filteredCourses.length} {filteredCourses.length === 1 ? 'curso' : 'cursos'}
+          </p>
+          {filteredCourses.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {searchResults.map(course => (
-                <CourseCardComponent key={course.id} course={course} onClick={() => handleSelect(course)}
-                  progress={getProgressPct(course.id)} variant="compact" />
+              {filteredCourses.map((course) => (
+                <CourseCardComponent
+                  key={course.id}
+                  course={course}
+                  onClick={() => handleSelect(course)}
+                  progress={getProgressPct(course.id)}
+                  variant="compact"
+                />
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <p className="text-text-dim font-sans text-sm">Nenhum curso encontrado.</p>
+            <div className="text-center py-20 border border-border-subtle border-dashed">
+              <p className="font-serif italic text-text-dim text-lg mb-4">
+                Nenhum curso com esses filtros.
+              </p>
+              <button
+                onClick={() => { setActiveCategory('todos'); setSearchQuery(''); }}
+                className="font-mono text-[0.62rem] text-accent tracking-[0.22em] uppercase hover:text-text-bright transition-colors"
+              >
+                Limpar filtros
+              </button>
             </div>
           )}
         </section>
       ) : (
-        <section className="max-w-[1200px] mx-auto pb-24">
-          {/* Featured courses */}
-          {featuredCourses.length > 0 && (
+        <section className="max-w-[1280px] mx-auto pb-24">
+          {/* Outros destaques (sem o featured #1 já no hero) */}
+          {otherFeatured.length > 0 && (
             <div className="px-6 md:px-12 mb-12">
-              <h3 className="font-serif text-lg text-text-bright mb-5 flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-accent">
-                  <path d="M12 2l3 9h9l-7.5 5.5L19 22l-7-5-7 5 2.5-5.5L0 11h9z" />
-                </svg>
-                Destaques
-              </h3>
+              <header className="flex items-baseline gap-4 mb-5">
+                <span className="font-mono text-[0.62rem] text-accent tracking-[0.25em] uppercase">
+                  Mais destaques
+                </span>
+                <span className="flex-1 h-px bg-border-subtle" />
+              </header>
               <div className={`grid gap-5 ${
-                featuredCourses.length === 1 ? 'grid-cols-1 max-w-[300px]' :
-                featuredCourses.length === 2 ? 'grid-cols-2 max-w-[620px]' :
-                featuredCourses.length === 3 ? 'grid-cols-2 md:grid-cols-3 max-w-[940px]' :
+                otherFeatured.length === 1 ? 'grid-cols-1 max-w-[300px]' :
+                otherFeatured.length === 2 ? 'grid-cols-2 max-w-[620px]' :
+                otherFeatured.length === 3 ? 'grid-cols-2 md:grid-cols-3 max-w-[940px]' :
                 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
               }`}>
-                {featuredCourses.map(course => (
-                  <CourseCardComponent key={course.id} course={course} onClick={() => handleSelect(course)}
-                    progress={getProgressPct(course.id)} variant="featured" />
+                {otherFeatured.map(course => (
+                  <CourseCardComponent
+                    key={course.id}
+                    course={course}
+                    onClick={() => handleSelect(course)}
+                    progress={getProgressPct(course.id)}
+                    variant="featured"
+                  />
                 ))}
               </div>
             </div>
           )}
 
-          {/* Category carousels */}
+          {/* Carrosséis por categoria */}
           {categoryGroups.map(([category, categoryCourses]) => (
             <div key={category} className="px-6 md:px-12">
               <CategoryCarousel
@@ -367,12 +623,11 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
             </div>
           ))}
 
-          {/* Empty state */}
           {publishedCourses.length === 0 && (
             <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center py-24">
               <p className="text-5xl mb-6 opacity-30">&Psi;</p>
               <p className="font-serif text-xl text-text-bright mb-2">Em breve, novos cursos</p>
-              <p className="text-text-dim text-sm">Estamos preparando conteudos especiais para voce.</p>
+              <p className="text-text-dim text-sm">Estamos preparando conteúdos especiais para você.</p>
             </motion.div>
           )}
         </section>

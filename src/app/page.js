@@ -4,6 +4,7 @@ import Hero from '@/components/home/Hero';
 import Prelude from '@/components/home/Prelude';
 import About from '@/components/home/About';
 import Cartography from '@/components/home/Cartography';
+import StudyPaths from '@/components/home/StudyPaths';
 import MaterialsPreview from '@/components/home/MaterialsPreview';
 import CoursesPreview from '@/components/home/CoursesPreview';
 import BlogPreview from '@/components/home/BlogPreview';
@@ -24,6 +25,7 @@ export default function HomePage() {
           <MandalaDivider size={56} opacity={0.3} />
         </div>
         <Cartography />
+        <StudyPaths />
         <MaterialsPreview />
         <CoursesPreview />
         <BlogPreview />
