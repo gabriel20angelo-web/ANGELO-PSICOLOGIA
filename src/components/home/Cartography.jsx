@@ -6,42 +6,10 @@ import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
 import { getCartoNodes, getCartoEdges } from '@/lib/sitedata';
 
-// Nós da cartografia — fallback default (admin pode editar via localStorage)
-const DEFAULT_NODES = [
-  { id: 'self',      label: 'Self',                  x: 400, y: 260, size: 28, tone: 'accent',   axiom: 'centro arquetípico' },
-  { id: 'ego',       label: 'Ego',                   x: 290, y: 200, size: 18, tone: 'bright',   axiom: 'sujeito da consciência' },
-  { id: 'persona',   label: 'Persona',               x: 200, y: 130, size: 16, tone: 'bright',   axiom: 'máscara social' },
-  { id: 'sombra',    label: 'Sombra',                x: 250, y: 360, size: 22, tone: 'rubedo',   axiom: 'o que não se quis ser' },
-  { id: 'anima',     label: 'Anima',                 x: 540, y: 170, size: 20, tone: 'citrinit', axiom: 'feminino interior' },
-  { id: 'animus',    label: 'Animus',                x: 600, y: 330, size: 20, tone: 'citrinit', axiom: 'masculino interior' },
-  { id: 'incol',     label: 'Inconsciente Coletivo', x: 700, y: 200, size: 18, tone: 'accent',   axiom: 'substrato comum' },
-  { id: 'arc',       label: 'Arquétipo',             x: 660, y: 100, size: 16, tone: 'bright',   axiom: 'forma a priori' },
-  { id: 'complexo',  label: 'Complexo',              x: 130, y: 280, size: 18, tone: 'bright',   axiom: 'núcleo afetivo autônomo' },
-  { id: 'sincron',   label: 'Sincronicidade',        x: 130, y: 440, size: 16, tone: 'rubedo',   axiom: 'sentido sem causa' },
-  { id: 'individ',   label: 'Individuação',          x: 460, y: 460, size: 24, tone: 'accent',   axiom: 'tornar-se quem se é' },
-  { id: 'mito',      label: 'Mito Pessoal',          x: 690, y: 450, size: 16, tone: 'citrinit', axiom: 'narrativa da alma' },
-];
+// Nós da cartografia — re-exportado de sitedata pra evitar duplicação
+import { DEFAULT_CARTO_NODES as DEFAULT_NODES } from '@/lib/sitedata';
 
-// Arestas — fallback default
-const DEFAULT_EDGES = [
-  ['self', 'ego'],
-  ['self', 'individ'],
-  ['self', 'incol'],
-  ['ego', 'persona'],
-  ['ego', 'sombra'],
-  ['ego', 'complexo'],
-  ['sombra', 'individ'],
-  ['anima', 'self'],
-  ['animus', 'self'],
-  ['anima', 'arc'],
-  ['animus', 'arc'],
-  ['arc', 'incol'],
-  ['complexo', 'sombra'],
-  ['complexo', 'sincron'],
-  ['individ', 'mito'],
-  ['mito', 'incol'],
-  ['sincron', 'incol'],
-];
+import { DEFAULT_CARTO_EDGES as DEFAULT_EDGES } from '@/lib/sitedata';
 
 const TONE_FILL = {
   accent: '#B48C50',
@@ -50,14 +18,16 @@ const TONE_FILL = {
   rubedo: '#8B3A2E',
 };
 
-function Node({ node, hovered, onHover, onLeave }) {
+function Node({ node, hovered, onHover, onLeave, onClick }) {
   const fill = TONE_FILL[node.tone] || '#B48C50';
   const isActive = hovered === node.id;
+  const isClickable = !!node.href;
   return (
     <g
       onMouseEnter={() => onHover(node.id)}
       onMouseLeave={onLeave}
-      style={{ cursor: 'pointer' }}
+      onClick={() => isClickable && onClick(node)}
+      style={{ cursor: isClickable ? 'pointer' : 'default' }}
     >
       {/* Halo */}
       <circle
@@ -68,6 +38,20 @@ function Node({ node, hovered, onHover, onLeave }) {
         opacity={isActive ? 0.18 : 0.06}
         style={{ transition: 'opacity 250ms' }}
       />
+      {/* Anel externo extra para nós clicáveis */}
+      {isClickable && (
+        <circle
+          cx={node.x}
+          cy={node.y}
+          r={node.size + 4}
+          fill="none"
+          stroke={fill}
+          strokeWidth={isActive ? 0.8 : 0.4}
+          strokeDasharray="2 3"
+          opacity={isActive ? 0.9 : 0.5}
+          style={{ transition: 'all 250ms' }}
+        />
+      )}
       <circle
         cx={node.x}
         cy={node.y}
@@ -110,6 +94,15 @@ export default function Cartography() {
 
   const nodeMap = Object.fromEntries(nodes.map((n) => [n.id, n]));
   const hoveredNode = hovered ? nodeMap[hovered] : null;
+
+  const handleNodeClick = (node) => {
+    if (!node.href) return;
+    if (node.href.startsWith('http')) {
+      window.open(node.href, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = node.href;
+    }
+  };
 
   return (
     <section
@@ -221,6 +214,7 @@ export default function Cartography() {
                   hovered={hovered}
                   onHover={setHovered}
                   onLeave={() => setHovered(null)}
+                  onClick={handleNodeClick}
                 />
               ))}
             </g>
@@ -236,6 +230,11 @@ export default function Cartography() {
                 <span className="font-serif italic text-[1.05rem] text-text-bright">
                   {hoveredNode.axiom}
                 </span>
+                {hoveredNode.href && (
+                  <span className="font-mono text-[0.55rem] text-accent/70 tracking-[0.22em] uppercase ml-auto">
+                    Clique para acessar →
+                  </span>
+                )}
               </>
             ) : (
               <span className="font-mono text-[0.6rem] text-text-dim/70 tracking-[0.25em] uppercase">
