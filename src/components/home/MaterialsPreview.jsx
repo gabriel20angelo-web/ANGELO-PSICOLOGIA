@@ -7,6 +7,7 @@ import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
 import { materials, contentTypeLabels } from '@/data/materials';
 import { img } from '@/lib/basepath';
+import { SpiralAccent } from '@/components/illustrations';
 
 // Bento layout — até 6 tiles com spans variados.
 // Layout em md+:  [span2 row2 ] [span1] [span1]
@@ -118,13 +119,19 @@ export default function MaterialsPreview() {
   return (
     <section
       ref={ref}
-      className="py-24 md:py-32 px-6 md:px-12 section-border-t section-border-b"
+      className="py-24 md:py-32 px-6 md:px-12 section-border-t section-border-b relative overflow-hidden"
     >
+      {/* Espiral decorativa no canto esquerdo */}
+      <SpiralAccent
+        className="absolute -top-20 -left-32 pointer-events-none hidden md:block"
+        size={340}
+        opacity={0.12}
+      />
       <motion.div
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
         variants={stagger}
-        className="max-w-[1180px] mx-auto"
+        className="max-w-[1180px] mx-auto relative"
       >
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
           <div>

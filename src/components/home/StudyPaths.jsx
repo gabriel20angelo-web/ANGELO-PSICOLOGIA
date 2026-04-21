@@ -7,6 +7,7 @@ import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
 import { trilhas as TRILHAS_DEFAULT, TRILHA_TONE } from '@/data/trilhas';
 import { getTrilhas } from '@/lib/sitedata';
+import { OrbitalAccent, QuaternioSigil } from '@/components/illustrations';
 
 /**
  * StudyPaths — preview na home das 3 trilhas oficiais.
@@ -24,12 +25,24 @@ export default function StudyPaths() {
   if (!trilhas || trilhas.length === 0) return null;
 
   return (
-    <section ref={ref} className="py-24 md:py-32 px-6 md:px-12">
+    <section ref={ref} className="py-24 md:py-32 px-6 md:px-12 relative overflow-hidden">
+      {/* Orbital accent no canto direito */}
+      <OrbitalAccent
+        className="absolute -top-20 -right-24 pointer-events-none hidden md:block"
+        size={360}
+        opacity={0.08}
+      />
+      {/* Quaternio sutil no canto esquerdo inferior */}
+      <QuaternioSigil
+        className="absolute bottom-10 left-8 pointer-events-none hidden lg:block"
+        size={72}
+        opacity={0.18}
+      />
       <motion.div
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
         variants={stagger}
-        className="max-w-[1180px] mx-auto"
+        className="max-w-[1180px] mx-auto relative"
       >
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
           <div>

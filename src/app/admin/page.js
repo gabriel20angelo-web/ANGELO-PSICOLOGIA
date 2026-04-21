@@ -8,6 +8,7 @@ import CourseManager from '@/components/admin/CourseManager';
 import TrilhasManager from '@/components/admin/TrilhasManager';
 import CartographyManager from '@/components/admin/CartographyManager';
 import ContentManager from '@/components/admin/ContentManager';
+import BioManager from '@/components/admin/BioManager';
 
 // ─── Constants ───────────────────────────────────────────────────────
 const STORAGE_KEYS = {
@@ -254,6 +255,15 @@ function IconPen({ size = 20 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+    </svg>
+  );
+}
+
+function IconUser({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
     </svg>
   );
 }
@@ -734,6 +744,7 @@ function MobileBottomNav({ activeTab, setActiveTab, materialsList, testimonialsL
     { id: 'trilhas', label: 'Trilhas', icon: IconBook },
     { id: 'cartography', label: 'Cartografia', icon: IconGrid },
     { id: 'content', label: 'Conteúdo', icon: IconPen },
+    { id: 'bio', label: 'Bio', icon: IconUser },
     { id: 'blog', label: 'Blog', icon: IconPen },
     { id: 'courses', label: 'Cursos', icon: IconVideo },
     { id: 'testimonials', label: 'Depoimentos', icon: IconChat, badge: testimonialsList.length },
@@ -2580,6 +2591,7 @@ function AdminPanel() {
     { id: 'trilhas', label: 'Trilhas', badge: null },
     { id: 'cartography', label: 'Cartografia', badge: null },
     { id: 'content', label: 'Conteúdo', badge: null },
+    { id: 'bio', label: 'Bio / Linktree', badge: null },
     { id: 'blog', label: 'Blog', badge: null },
     { id: 'courses', label: 'Cursos', badge: null },
     { id: 'testimonials', label: 'Depoimentos', badge: testimonialsList.length },
@@ -2705,6 +2717,13 @@ function AdminPanel() {
           {activeTab === 'content' && (
             <ContentManager
               key="content"
+              addToast={addToast}
+              addLogEntry={addLogEntry}
+            />
+          )}
+          {activeTab === 'bio' && (
+            <BioManager
+              key="bio"
               addToast={addToast}
               addLogEntry={addLogEntry}
             />

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { fadeUp, stagger } from '@/lib/constants';
 import SectionLabel from '@/components/SectionLabel';
 import CourseCard from '@/components/cursos/CourseCard';
+import { QuaternioSigil } from '@/components/illustrations';
 
 const STORAGE_KEY = 'angelo_admin_courses';
 
@@ -47,7 +48,12 @@ export default function CoursesPreview() {
   const regular = courses.filter((c) => !c.featured);
 
   return (
-    <section ref={ref} className="py-20 px-6 md:px-12">
+    <section ref={ref} className="py-20 px-6 md:px-12 relative overflow-hidden">
+      <QuaternioSigil
+        className="absolute top-8 right-8 pointer-events-none hidden md:block"
+        size={96}
+        opacity={0.12}
+      />
       <motion.div initial="hidden" animate={inView ? 'visible' : 'hidden'} variants={stagger} className="max-w-[1100px] mx-auto">
         <SectionLabel label="Formacao" />
         <motion.div variants={fadeUp} className="flex items-end justify-between mb-10">

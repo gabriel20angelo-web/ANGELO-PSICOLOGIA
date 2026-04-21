@@ -3,6 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { getHomepage, DEFAULT_HOMEPAGE } from '@/lib/sitedata';
+import { BranchOrnament, GlyphTrio } from '@/components/illustrations';
 
 /**
  * Prelude — frontispício entre Hero e About.
@@ -41,19 +42,25 @@ export default function Prelude() {
         className="relative max-w-[680px] mx-auto text-center"
       >
         {/* Mark de seção */}
-        <p className="font-mono text-[0.6rem] text-accent tracking-[0.4em] uppercase mb-8 flex items-center justify-center gap-3">
+        <p className="font-mono text-[0.6rem] text-accent tracking-[0.4em] uppercase mb-6 flex items-center justify-center gap-3">
           <span className="block w-8 h-px bg-accent/40" />
           Prelúdio
           <span className="block w-8 h-px bg-accent/40" />
         </p>
+
+        {/* Ornamento alquímico acima da passagem */}
+        <GlyphTrio className="mx-auto mb-8" />
 
         {/* Frontispício — italic, ritmado */}
         <p className="font-serif italic text-[clamp(1.15rem,1.7vw,1.45rem)] text-text-bright leading-[1.7] tracking-[0.005em]">
           {content.body}
         </p>
 
+        {/* Ornamento inferior */}
+        <BranchOrnament className="mx-auto mt-10" />
+
         {/* Tagline grega — discreta, chancela */}
-        <div className="mt-10 flex items-center justify-center gap-4">
+        <div className="mt-6 flex items-center justify-center gap-4">
           <span className="block w-12 h-px bg-accent/30" />
           <span
             className="font-serif italic text-accent text-base tracking-wide"

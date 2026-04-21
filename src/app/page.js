@@ -12,6 +12,16 @@ import Testimonials from '@/components/home/Testimonials';
 import FAQ from '@/components/home/FAQ';
 import ContactCTA from '@/components/home/ContactCTA';
 import MandalaDivider from '@/components/ui/MandalaDivider';
+import {
+  AlchemyDivider,
+  DiamondChain,
+} from '@/components/illustrations';
+
+function Break({ children, pad = 'py-4' }) {
+  return (
+    <div className={`max-w-[1180px] mx-auto px-6 md:px-12 ${pad}`}>{children}</div>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -21,14 +31,23 @@ export default function HomePage() {
         <Hero />
         <Prelude />
         <About />
-        <div className="max-w-[1180px] mx-auto px-6 md:px-12 py-4">
+        <Break>
           <MandalaDivider size={56} opacity={0.3} />
-        </div>
+        </Break>
         <Cartography />
+        <Break pad="py-2">
+          <AlchemyDivider />
+        </Break>
         <StudyPaths />
         <MaterialsPreview />
+        <Break pad="py-2">
+          <DiamondChain />
+        </Break>
         <CoursesPreview />
         <BlogPreview />
+        <Break pad="py-2">
+          <AlchemyDivider />
+        </Break>
         <Testimonials />
         <FAQ />
         <ContactCTA />

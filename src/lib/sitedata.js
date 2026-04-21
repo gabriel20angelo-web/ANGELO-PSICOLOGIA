@@ -19,6 +19,7 @@ export const SITEDATA_KEYS = {
   cartoNodes: 'angelo_admin_cartography_nodes',
   cartoEdges: 'angelo_admin_cartography_edges',
   homepage:   'angelo_admin_homepage',
+  bio:        'angelo_admin_bio',
 };
 
 /* ===================================================================
@@ -96,6 +97,19 @@ export const DEFAULT_HOMEPAGE = {
   },
 };
 
+export const DEFAULT_BIO = {
+  name: 'Psiângelo',
+  tagline: 'Psicologia Analítica · Jung',
+  bio: 'Estudante de psicologia, estagiário clínico. Aqui divido o que estudo, atendo e ensino.',
+  images: [],
+  links: [
+    { label: 'Contato comigo',        href: 'https://wa.me/5562993776565', external: true  },
+    { label: 'Resumos e materiais',   href: '/materiais',                  external: false },
+    { label: 'Blog e ensaios',        href: '/blog',                       external: false },
+    { label: 'Cursos',                href: '/cursos',                     external: false },
+  ],
+};
+
 /* ===================================================================
    READ HELPERS — server-safe (devolvem default sem window)
 =================================================================== */
@@ -139,3 +153,15 @@ export const getHomepage   = () => {
   };
 };
 export const setHomepage = (v) => writeJson(SITEDATA_KEYS.homepage, v);
+
+export const getBio = () => {
+  const stored = readJson(SITEDATA_KEYS.bio, null);
+  if (!stored) return DEFAULT_BIO;
+  return {
+    ...DEFAULT_BIO,
+    ...stored,
+    images: Array.isArray(stored.images) ? stored.images : DEFAULT_BIO.images,
+    links:  Array.isArray(stored.links)  ? stored.links  : DEFAULT_BIO.links,
+  };
+};
+export const setBio = (v) => writeJson(SITEDATA_KEYS.bio, v);
