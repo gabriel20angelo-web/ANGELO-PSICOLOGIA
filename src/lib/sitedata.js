@@ -103,7 +103,7 @@ export const DEFAULT_BIO = {
   bio: 'Estudante de psicologia, estagiário clínico. Aqui divido o que estudo, atendo e ensino.',
   images: [],
   links: [
-    { label: 'Contato comigo',        href: 'https://wa.me/5562993776565', external: true  },
+    { label: 'Contato comigo',        href: 'https://wa.me/5581987349114', external: true  },
     { label: 'Resumos e materiais',   href: '/materiais',                  external: false },
     { label: 'Blog e ensaios',        href: '/blog',                       external: false },
     { label: 'Cursos',                href: '/cursos',                     external: false },

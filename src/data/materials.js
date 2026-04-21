@@ -1,7 +1,7 @@
 // ============================================================
 // DADOS DOS MATERIAIS
 // Para alterar links do WhatsApp, substitua os valores de 'whatsappLink'
-// Formato: https://wa.me/55XXXXXXXXXXX?text=MENSAGEM
+// Formato: https://wa.me/5581987349114?text=MENSAGEM
 // Para alterar preços, edite os campos 'price' e 'chapterPrice'
 // ============================================================
 
@@ -26,9 +26,9 @@ export const materials = [
     image: '/images/pratica-psicoterapia.jpg',
     price: 'R$ XX,XX',
     chapterPrice: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no resumo completo de A Prática da Psicoterapia (Vol. XVI/1)',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no resumo completo de A Prática da Psicoterapia (Vol. XVI/1)',
     chapters: [
-      { number: 1, title: 'Princípios da Psicoterapia Prática', available: true, price: 'R$ XX,XX', whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no Cap. 1 — Princípios da Psicoterapia Prática' },
+      { number: 1, title: 'Princípios da Psicoterapia Prática', available: true, price: 'R$ XX,XX', whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no Cap. 1 — Princípios da Psicoterapia Prática' },
       { number: 2, title: 'O que é Psicoterapia?', available: false, price: 'R$ XX,XX', whatsappLink: '#' },
       { number: 3, title: 'Alguns Aspectos da Psicoterapia Moderna', available: false, price: 'R$ XX,XX', whatsappLink: '#' },
       { number: 4, title: 'Objetivos da Psicoterapia', available: false, price: 'R$ XX,XX', whatsappLink: '#' },
@@ -52,7 +52,7 @@ export const materials = [
     tags: ['Jung', 'Introdução', 'Psicologia Analítica'],
     image: '/images/pensamento-vivo.jpg',
     price: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no resumo de O Pensamento Vivo de Jung',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no resumo de O Pensamento Vivo de Jung',
     chapters: null,
   },
 
@@ -70,7 +70,7 @@ export const materials = [
     tags: ['Hermenêutica', 'Interpretação', 'Clínica'],
     image: '/images/hermeneutica.jpg',
     price: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no material sobre Hermenêutica na Psicologia',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no material sobre Hermenêutica na Psicologia',
     chapters: null,
   },
 
@@ -88,7 +88,7 @@ export const materials = [
     tags: ['Tipologia', 'Diagnóstico', 'Psicologia Analítica'],
     image: '/images/atitude-tipologia.jpg',
     price: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no mapa mental sobre Atitude, Tipologia e Diagnóstico',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no mapa mental sobre Atitude, Tipologia e Diagnóstico',
     chapters: null,
   },
   {
@@ -104,7 +104,7 @@ export const materials = [
     tags: ['Tipos', 'Atitude', 'Psicologia Analítica'],
     image: '/images/extroversao-introversao.jpg',
     price: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no mapa mental sobre Extroversão e Introversão',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no mapa mental sobre Extroversão e Introversão',
     chapters: null,
   },
   {
@@ -120,7 +120,7 @@ export const materials = [
     tags: ['Consciência', 'Complexo', 'Ego'],
     image: '/images/consciencia-complexo-ego.jpg',
     price: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no mapa mental sobre Consciência, Complexo e Ego',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no mapa mental sobre Consciência, Complexo e Ego',
     chapters: null,
   },
   {
@@ -136,7 +136,7 @@ export const materials = [
     tags: ['Equação Pessoal', 'Clínica', 'Psicologia Analítica'],
     image: '/images/equacao-pessoal.jpg',
     price: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no mapa mental sobre Equação Pessoal',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no mapa mental sobre Equação Pessoal',
     chapters: null,
   },
   {
@@ -152,7 +152,7 @@ export const materials = [
     tags: ['Neurose', 'Terapêutica', 'Psicologia Analítica'],
     image: '/images/neurose-fatores.jpg',
     price: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no mapa mental sobre Neurose, Fatores Terapêuticos e Fim de Análise',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no mapa mental sobre Neurose, Fatores Terapêuticos e Fim de Análise',
     chapters: null,
   },
   {
@@ -168,7 +168,7 @@ export const materials = [
     tags: ['Projeção', 'Inconsciente', 'Psicologia Analítica'],
     image: '/images/projecao.jpg',
     price: 'R$ XX,XX',
-    whatsappLink: 'https://wa.me/55XXXXXXXXXXX?text=Olá! Tenho interesse no mapa mental sobre Projeção',
+    whatsappLink: 'https://wa.me/5581987349114?text=Olá! Tenho interesse no mapa mental sobre Projeção',
     chapters: null,
   },
 ];

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const PHONE = '5562993776565';
+const PHONE = '5581987349114';
 const MESSAGE = 'Olá! Vi seu site e gostaria de saber mais sobre seus materiais de psicologia.';
 
 export default function WhatsAppButton() {

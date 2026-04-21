@@ -26,7 +26,7 @@ const STORAGE_KEYS = {
 const DEFAULT_PASSWORD = 'Nilohihi1408!';
 
 const DEFAULT_SETTINGS = {
-  whatsappNumber: '55XXXXXXXXXXX',
+  whatsappNumber: '5581987349114',
   instagramLink: '',
   youtubeLink: '',
   emailAddress: '',

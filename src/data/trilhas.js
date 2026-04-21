@@ -105,7 +105,7 @@ export const trilhas = [
         title: 'IV · Grupo de prática',
         kind: 'extra',
         detail: 'Supervisão e intervisão fazem diferença real. Entre em contato pelo WhatsApp para conhecer os grupos abertos.',
-        href: 'https://wa.me/5562993776565',
+        href: 'https://wa.me/5581987349114',
       },
     ],
   },

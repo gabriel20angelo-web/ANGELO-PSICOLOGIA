@@ -6,7 +6,7 @@ import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
 import { QuaternioSigil, BranchOrnament } from '@/components/illustrations';
 
-const WHATSAPP_URL = 'https://wa.me/5562993776565';
+const WHATSAPP_URL = 'https://wa.me/5581987349114';
 
 // QR Code SVG hardcoded — gerado via qrserver/api offline.
 // Para produção definitiva, substituir por SVG real do número.
