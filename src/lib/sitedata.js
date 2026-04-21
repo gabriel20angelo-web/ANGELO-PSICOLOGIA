@@ -103,10 +103,30 @@ export const DEFAULT_BIO = {
   bio: 'Estudante de psicologia, estagiário clínico. Aqui divido o que estudo, atendo e ensino.',
   images: [],
   links: [
-    { label: 'Contato comigo',        href: 'https://wa.me/5581987349114', external: true  },
-    { label: 'Resumos e materiais',   href: '/materiais',                  external: false },
-    { label: 'Blog e ensaios',        href: '/blog',                       external: false },
-    { label: 'Cursos',                href: '/cursos',                     external: false },
+    {
+      label: 'Contato comigo',
+      href: 'https://wa.me/5581987349114',
+      image: '',
+      description: '',
+    },
+    {
+      label: 'Resumos e materiais',
+      href: '/materiais',
+      image: '',
+      description: '',
+    },
+    {
+      label: 'Blog e ensaios',
+      href: '/blog',
+      image: '',
+      description: '',
+    },
+    {
+      label: 'Cursos',
+      href: '/cursos',
+      image: '',
+      description: '',
+    },
   ],
 };
 
@@ -157,11 +177,19 @@ export const setHomepage = (v) => writeJson(SITEDATA_KEYS.homepage, v);
 export const getBio = () => {
   const stored = readJson(SITEDATA_KEYS.bio, null);
   if (!stored) return DEFAULT_BIO;
+  const links = Array.isArray(stored.links) ? stored.links : DEFAULT_BIO.links;
   return {
     ...DEFAULT_BIO,
     ...stored,
     images: Array.isArray(stored.images) ? stored.images : DEFAULT_BIO.images,
-    links:  Array.isArray(stored.links)  ? stored.links  : DEFAULT_BIO.links,
+    // Garante que todo link tem os campos novos (image, description)
+    // mesmo que tenha sido salvo antes deles existirem.
+    links: links.map((l) => ({
+      label: l.label ?? '',
+      href: l.href ?? '',
+      image: l.image ?? '',
+      description: l.description ?? '',
+    })),
   };
 };
 export const setBio = (v) => writeJson(SITEDATA_KEYS.bio, v);

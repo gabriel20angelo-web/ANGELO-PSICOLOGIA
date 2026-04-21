@@ -49,9 +49,48 @@ function MandalaHalo() {
   );
 }
 
-function LinkButton({ label, href, external, index }) {
+function isExternal(href) {
+  if (!href) return false;
+  return /^(https?:)?\/\//.test(href) || href.startsWith('mailto:') || href.startsWith('tel:');
+}
+
+function resolveImageSrc(url) {
+  if (!url) return null;
+  if (url.startsWith('http')) return url;
+  if (url.startsWith('/ANGELO-PSICOLOGIA')) return url;
+  if (url.startsWith('/')) return img(url);
+  return url;
+}
+
+function SimpleLink({ label, children, className = '' }) {
+  return (
+    <div className={`flex items-center justify-between gap-3 ${className}`}>
+      <span className="font-serif text-[1.02rem] text-text-bright group-hover:text-accent transition-colors">
+        {label}
+      </span>
+      {children}
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        className="text-text-dim group-hover:text-accent group-hover:translate-x-1 transition-all flex-shrink-0"
+      >
+        <path d="M5 12h14M12 5l7 7-7 7" />
+      </svg>
+    </div>
+  );
+}
+
+function LinkButton({ link, index }) {
+  const { label, href, image, description } = link;
+  const external = isExternal(href);
   const Tag = external ? 'a' : Link;
   const extraProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+  const imageSrc = resolveImageSrc(image);
+  const isCard = !!imageSrc;
 
   return (
     <motion.div
@@ -60,27 +99,63 @@ function LinkButton({ label, href, external, index }) {
       transition={{ duration: 0.5, delay: 0.15 + index * 0.07, ease: [0.22, 1, 0.36, 1] }}
     >
       <Tag
-        href={href}
+        href={href || '#'}
         {...extraProps}
-        className="group relative block w-full px-5 py-4 bg-[#1A1714] border border-[rgba(180,140,80,0.22)] hover:border-accent hover:bg-[rgba(180,140,80,0.08)] transition-all duration-300 rounded-xl overflow-hidden"
+        className="group relative block w-full bg-[#1A1714] border border-[rgba(180,140,80,0.22)] hover:border-accent hover:bg-[rgba(180,140,80,0.08)] transition-all duration-300 rounded-xl overflow-hidden"
       >
-        <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-accent/0 group-hover:bg-accent transition-colors" />
-        <div className="flex items-center justify-between gap-3">
-          <span className="font-serif text-[1.02rem] text-text-bright group-hover:text-accent transition-colors">
-            {label}
-          </span>
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            className="text-text-dim group-hover:text-accent group-hover:translate-x-1 transition-all"
-          >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </div>
+        <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-accent/0 group-hover:bg-accent transition-colors z-20" />
+
+        {isCard ? (
+          <>
+            {/* Imagem grande em cima */}
+            <div className="relative h-44 sm:h-52 w-full overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageSrc}
+                alt={label || ''}
+                className="w-full h-full object-cover scale-[1.02] group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+              />
+              {/* Gradiente que esmaece pro fundo do card */}
+              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent via-[#1A1714]/70 to-[#1A1714]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1A1714]/0 via-[#1A1714]/0 to-[#1A1714]/70" />
+            </div>
+
+            {/* Descrição + botão */}
+            <div className="relative px-5 pb-5 pt-1 -mt-4 z-10">
+              {description && (
+                <p className="text-[0.9rem] text-text-dim leading-[1.55] mb-3">
+                  {description}
+                </p>
+              )}
+              <div className="flex items-center justify-center gap-2 px-4 py-3 bg-accent/10 border border-accent/30 group-hover:bg-accent group-hover:border-accent transition-colors rounded-lg">
+                <span className="font-sans text-[0.72rem] tracking-[0.18em] uppercase font-medium text-accent group-hover:text-bg transition-colors">
+                  {label || 'Abrir'}
+                </span>
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-accent group-hover:text-bg group-hover:translate-x-1 transition-all"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="px-5 py-4">
+            <SimpleLink label={label} />
+            {description && (
+              <p className="text-[0.82rem] text-text-dim/80 leading-snug mt-1.5">
+                {description}
+              </p>
+            )}
+          </div>
+        )}
       </Tag>
     </motion.div>
   );
@@ -225,16 +300,10 @@ export default function BioPage() {
           <Gallery images={bio.images} />
         </div>
 
-        {/* Botões */}
+        {/* Botões / Cards */}
         <div className="w-full flex flex-col gap-3 mb-10">
           {bio.links.map((link, i) => (
-            <LinkButton
-              key={link.href + i}
-              label={link.label}
-              href={link.href}
-              external={link.external}
-              index={i}
-            />
+            <LinkButton key={i} link={link} index={i} />
           ))}
         </div>
 

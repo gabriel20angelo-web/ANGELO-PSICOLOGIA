@@ -53,11 +53,40 @@ export default function BioManager({ addToast, addLogEntry }) {
     setDirty(true);
   };
 
-  const updateLinkLabel = (idx, value) => {
+  const updateLink = (idx, key, value) => {
     const links = [...data.links];
-    links[idx] = { ...links[idx], label: value };
+    links[idx] = { ...links[idx], [key]: value };
     setData({ ...data, links });
     setDirty(true);
+  };
+
+  const addLink = () => {
+    const links = [...(data.links || []), { label: 'Novo link', href: '', image: '', description: '' }];
+    setData({ ...data, links });
+    setDirty(true);
+  };
+
+  const removeLink = (idx) => {
+    const links = data.links.filter((_, i) => i !== idx);
+    setData({ ...data, links });
+    setDirty(true);
+  };
+
+  const moveLink = (idx, dir) => {
+    const links = [...data.links];
+    const target = idx + dir;
+    if (target < 0 || target >= links.length) return;
+    [links[idx], links[target]] = [links[target], links[idx]];
+    setData({ ...data, links });
+    setDirty(true);
+  };
+
+  const resolveLinkImage = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    if (url.startsWith('/ANGELO-PSICOLOGIA')) return url;
+    if (url.startsWith('/')) return `/ANGELO-PSICOLOGIA${url}`;
+    return url;
   };
 
   const persist = () => {
@@ -254,29 +283,133 @@ export default function BioManager({ addToast, addLogEntry }) {
         </div>
       </div>
 
-      {/* Botões */}
+      {/* Botões / Cards */}
       <div className={CARD}>
-        <h3 className="font-serif text-[#B48C50] mb-2 text-sm uppercase tracking-widest">
-          Botões
-        </h3>
-        <p className="text-[11px] text-[#6E6458] mb-4">
-          Os destinos são fixos — você pode trocar só o texto que aparece.
-        </p>
-        <div className="space-y-3">
-          {data.links.map((link, idx) => (
-            <div key={idx} className="grid md:grid-cols-[1fr_auto] gap-2 items-center">
-              <input
-                type="text"
-                value={link.label}
-                onChange={(e) => updateLinkLabel(idx, e.target.value)}
-                className={INPUT}
-                placeholder="Texto do botão"
-              />
-              <span className="text-[10px] text-[#6E6458] font-mono tracking-wider px-2 whitespace-nowrap">
-                → {link.href}
-              </span>
-            </div>
-          ))}
+        <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <div>
+            <h3 className="font-serif text-[#B48C50] text-sm uppercase tracking-widest">
+              Botões e cards
+            </h3>
+            <p className="text-[11px] text-[#6E6458] mt-1">
+              Com imagem → vira card (imagem esmaece até o botão). Sem imagem → só botão.
+              Descrição é opcional em ambos. Link pode ir pra onde quiser.
+            </p>
+          </div>
+          <button onClick={addLink} className={BTN_SECONDARY}>
+            + Adicionar link
+          </button>
+        </div>
+
+        {(!data.links || data.links.length === 0) && (
+          <p className="text-xs text-[#6E6458] italic text-center py-4">
+            Nenhum link ainda. Clique em "Adicionar link".
+          </p>
+        )}
+
+        <div className="space-y-4">
+          {data.links?.map((link, idx) => {
+            const preview = resolveLinkImage(link.image);
+            return (
+              <div
+                key={idx}
+                className="bg-[#0E0C0A] border border-[rgba(180,140,80,0.08)] rounded-lg p-4 space-y-3"
+              >
+                <div className="flex items-start gap-3">
+                  {/* Preview miniatura */}
+                  <div className="w-16 h-16 flex-shrink-0 bg-[#1A1714] border border-[rgba(180,140,80,0.12)] rounded overflow-hidden flex items-center justify-center">
+                    {preview ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={preview}
+                        alt={link.label || ''}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.currentTarget.style.opacity = '0.3'; }}
+                      />
+                    ) : (
+                      <span className="text-[#6E6458] text-[10px] text-center px-1">
+                        sem<br/>imagem
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Label + Href */}
+                  <div className="flex-1 space-y-2 min-w-0">
+                    <div>
+                      <label className={LABEL}>Texto do botão</label>
+                      <input
+                        type="text"
+                        value={link.label || ''}
+                        onChange={(e) => updateLink(idx, 'label', e.target.value)}
+                        className={INPUT}
+                        placeholder="Ex: Contato comigo"
+                      />
+                    </div>
+                    <div>
+                      <label className={LABEL}>Link (href)</label>
+                      <input
+                        type="text"
+                        value={link.href || ''}
+                        onChange={(e) => updateLink(idx, 'href', e.target.value)}
+                        className={INPUT}
+                        placeholder="https://... ou /materiais ou wa.me/..."
+                      />
+                    </div>
+                  </div>
+
+                  {/* Controles */}
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={() => moveLink(idx, -1)}
+                      disabled={idx === 0}
+                      className={BTN_SECONDARY + (idx === 0 ? ' opacity-30 cursor-not-allowed' : '')}
+                      title="Subir"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      onClick={() => moveLink(idx, 1)}
+                      disabled={idx === data.links.length - 1}
+                      className={BTN_SECONDARY + (idx === data.links.length - 1 ? ' opacity-30 cursor-not-allowed' : '')}
+                      title="Descer"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      onClick={() => removeLink(idx)}
+                      className={BTN_DANGER_INLINE}
+                      title="Remover"
+                    >
+                      remover
+                    </button>
+                  </div>
+                </div>
+
+                {/* Imagem + descrição em linha inferior */}
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div>
+                    <label className={LABEL}>Imagem (URL opcional)</label>
+                    <input
+                      type="text"
+                      value={link.image || ''}
+                      onChange={(e) => updateLink(idx, 'image', e.target.value)}
+                      className={INPUT}
+                      placeholder="/images/foto.jpg ou https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className={LABEL}>Descrição (opcional)</label>
+                    <input
+                      type="text"
+                      value={link.description || ''}
+                      onChange={(e) => updateLink(idx, 'description', e.target.value)}
+                      className={INPUT}
+                      placeholder="Texto curto que aparece antes do botão"
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </motion.div>
