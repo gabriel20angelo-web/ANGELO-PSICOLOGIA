@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { getBio, DEFAULT_BIO } from '@/lib/sitedata';
 import { img } from '@/lib/basepath';
-import { StarField, NebulaField } from '@/components/illustrations';
+import { StarField, NebulaField, ShootingStars } from '@/components/illustrations';
 
 /**
  * /bio — página mobile-first tipo linktree.
@@ -140,6 +140,7 @@ export default function BioPage() {
       <div className="fixed inset-0 pointer-events-none">
         <StarField count={80} maxOpacity={0.7} accentChance={0.22} />
         <NebulaField count={10} />
+        <ShootingStars count={2} />
       </div>
 
       {/* Ornamento de fundo — raízes sutis no topo */}

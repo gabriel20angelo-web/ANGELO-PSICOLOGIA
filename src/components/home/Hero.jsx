@@ -6,7 +6,7 @@ import Link from 'next/link';
 import CursorGlow from '@/components/ui/CursorGlow';
 import { PortraitHero } from '@/components/ui/Portrait';
 import { getHomepage, DEFAULT_HOMEPAGE } from '@/lib/sitedata';
-import { StarField, NebulaField } from '@/components/illustrations';
+import { StarField, NebulaField, ShootingStars } from '@/components/illustrations';
 
 function FloatingParticles() {
   const [particles, setParticles] = useState([]);
@@ -136,6 +136,7 @@ export default function Hero() {
       {/* Céu estrelado — camada mais distante */}
       <StarField count={70} maxOpacity={0.7} accentChance={0.22} />
       <NebulaField count={8} />
+      <ShootingStars count={3} />
 
       {/* Mandala translúcida no fundo */}
       <MandalaBackdrop />

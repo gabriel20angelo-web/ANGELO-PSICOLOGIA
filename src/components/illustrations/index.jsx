@@ -12,10 +12,11 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 // ══════════════════════════════════════════════════════════════════
-// StarField — céu estrelado decorativo
-// Gera N estrelas em posições randômicas (após mount, hydration-safe)
-// com tamanhos variáveis, glow sutil e twinkle opcional.
-// Use com posição relativa no container pai. Aceita className.
+// StarField — céu estrelado decorativo, animado
+// Estrelas piscam (twinkle) E flutuam lentamente em deriva tipo
+// correnteza cósmica. Cada estrela tem período/delay próprios,
+// então o movimento parece orgânico e não sincronizado.
+// Render só após mount (hydration-safe).
 // ══════════════════════════════════════════════════════════════════
 export function StarField({
   count = 50,
@@ -28,57 +29,98 @@ export function StarField({
   maxOpacity = 0.75,
   twinkle = true,
   glow = true,
+  drift = true,
+  driftAmount = 40,      // px — amplitude máxima da deriva
+  fallBias = 0.6,        // 0-1: quanto a deriva tende a cair (y positivo)
 }) {
   const [stars, setStars] = useState([]);
 
   useEffect(() => {
     setStars(
-      Array.from({ length: count }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: minSize + Math.random() * (maxSize - minSize),
-        color: Math.random() < accentChance ? accentColor : color,
-        duration: 2.6 + Math.random() * 4.4,
-        delay: Math.random() * 3,
-        baseOpacity: 0.2 + Math.random() * maxOpacity,
-      }))
+      Array.from({ length: count }, (_, i) => {
+        const dx = (Math.random() - 0.5) * 2 * driftAmount;
+        const dyBase = (Math.random() - 0.5) * 2 * driftAmount;
+        // fallBias puxa a deriva pra baixo (y positivo)
+        const dy = dyBase * (1 - fallBias) + Math.abs(dyBase) * fallBias;
+        return {
+          id: i,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          size: minSize + Math.random() * (maxSize - minSize),
+          color: Math.random() < accentChance ? accentColor : color,
+          twinkleDur: 2.6 + Math.random() * 4.4,
+          twinkleDelay: Math.random() * 3,
+          driftDur: 14 + Math.random() * 18,
+          driftDelay: Math.random() * 6,
+          dx,
+          dy,
+          baseOpacity: 0.2 + Math.random() * maxOpacity,
+        };
+      })
     );
-  }, [count, minSize, maxSize, color, accentColor, accentChance, maxOpacity]);
+  }, [count, minSize, maxSize, color, accentColor, accentChance, maxOpacity, driftAmount, fallBias]);
 
   return (
     <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`} aria-hidden>
       {stars.map((s) => {
-        const style = {
-          left: `${s.x}%`,
-          top: `${s.y}%`,
+        const dotStyle = {
           width: s.size,
           height: s.size,
           background: s.color,
           boxShadow: glow ? `0 0 ${s.size * 2.2}px ${s.color}` : undefined,
         };
-        if (!twinkle) {
-          return (
-            <span
-              key={s.id}
-              className="absolute rounded-full"
-              style={{ ...style, opacity: s.baseOpacity }}
-            />
-          );
-        }
-        return (
+
+        // Camada interna — twinkle (opacidade)
+        const dot = twinkle ? (
           <motion.span
-            key={s.id}
-            className="absolute rounded-full"
-            style={style}
+            className="block rounded-full"
+            style={dotStyle}
             animate={{ opacity: [s.baseOpacity * 0.25, s.baseOpacity, s.baseOpacity * 0.25] }}
             transition={{
-              duration: s.duration,
-              delay: s.delay,
+              duration: s.twinkleDur,
+              delay: s.twinkleDelay,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
           />
+        ) : (
+          <span
+            className="block rounded-full"
+            style={{ ...dotStyle, opacity: s.baseOpacity }}
+          />
+        );
+
+        // Camada externa — drift (translate)
+        if (!drift) {
+          return (
+            <span
+              key={s.id}
+              className="absolute"
+              style={{ left: `${s.x}%`, top: `${s.y}%` }}
+            >
+              {dot}
+            </span>
+          );
+        }
+
+        return (
+          <motion.span
+            key={s.id}
+            className="absolute"
+            style={{ left: `${s.x}%`, top: `${s.y}%` }}
+            animate={{
+              x: [0, s.dx * 0.5, s.dx, s.dx * 0.5, 0],
+              y: [0, s.dy * 0.5, s.dy, s.dy * 0.5, 0],
+            }}
+            transition={{
+              duration: s.driftDur,
+              delay: s.driftDelay,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            {dot}
+          </motion.span>
         );
       })}
     </div>
@@ -95,7 +137,74 @@ export function NebulaField({ count = 14, className = '' }) {
       maxSize={4}
       accentChance={0.6}
       maxOpacity={0.45}
+      driftAmount={60}
     />
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ShootingStars — estrelas cadentes ocasionais
+// Geram trilhas angulares atravessando o container em intervalos
+// randomizados. Use em fundos escuros (Hero, /bio, ContactCTA).
+// ══════════════════════════════════════════════════════════════════
+export function ShootingStars({
+  count = 3,
+  className = '',
+  color = '#E8DDD0',
+  accentColor = '#B48C50',
+  angleDeg = 28,  // inclinação da queda (0 = horizontal)
+}) {
+  const [shots, setShots] = useState([]);
+
+  useEffect(() => {
+    setShots(
+      Array.from({ length: count }, (_, i) => ({
+        id: i,
+        startX: 60 + Math.random() * 35,   // começa no quadrante sup-direito
+        startY: -10 + Math.random() * 25,
+        length: 90 + Math.random() * 80,   // comprimento da trilha (px)
+        duration: 1.1 + Math.random() * 0.9,
+        delay: 3 + i * 6 + Math.random() * 8,
+        cycle: 14 + Math.random() * 14,    // intervalo entre passagens
+        color: Math.random() < 0.3 ? accentColor : color,
+        angle: angleDeg + (Math.random() - 0.5) * 10,
+      }))
+    );
+  }, [count, color, accentColor, angleDeg]);
+
+  return (
+    <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`} aria-hidden>
+      {shots.map((s) => (
+        <motion.div
+          key={s.id}
+          className="absolute"
+          style={{
+            left: `${s.startX}%`,
+            top: `${s.startY}%`,
+            width: s.length,
+            height: 1,
+            background: `linear-gradient(90deg, transparent, ${s.color} 85%, ${s.color})`,
+            transform: `rotate(${s.angle}deg)`,
+            transformOrigin: 'left center',
+            filter: `drop-shadow(0 0 4px ${s.color})`,
+          }}
+          initial={{ opacity: 0, x: 0, y: 0 }}
+          animate={{
+            opacity: [0, 1, 1, 0],
+            x: [0, -300, -520, -700],
+            y: [0, 160, 280, 380],
+          }}
+          transition={{
+            duration: s.duration,
+            delay: s.delay,
+            repeat: Infinity,
+            repeatDelay: s.cycle,
+            ease: 'easeIn',
+            times: [0, 0.1, 0.8, 1],
+          }}
+        />
+      ))}
+    </div>
   );
 }
 
