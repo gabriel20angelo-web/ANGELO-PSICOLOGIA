@@ -64,13 +64,13 @@ export const trilhas = [
       {
         title: 'III · Equação pessoal',
         kind: 'mapa',
-        detail: 'Como sua subjetividade afeta a sessão. Indispensável para autosupervisão.',
+        detail: 'Como sua subjetividade afeta a sessão. Útil para autosupervisão.',
         material: 'equacao-pessoal',
       },
       {
         title: 'IV · Neurose e fim de análise',
         kind: 'mapa',
-        detail: 'Os fatores terapêuticos e os critérios para finalizar — onde a maioria dos analistas erra por excesso ou por falta.',
+        detail: 'Os fatores terapêuticos e os critérios para finalizar o processo analítico.',
         material: 'neurose-fatores-terapeuticos',
       },
     ],
@@ -92,7 +92,7 @@ export const trilhas = [
       {
         title: 'II · Projeção',
         kind: 'mapa',
-        detail: 'O mecanismo central da clínica. Sem reconhecer projeção, não há supervisão verdadeira.',
+        detail: 'O mecanismo central da clínica. Reconhecer projeção é central para qualquer supervisão.',
         material: 'projecao',
       },
       {
@@ -104,7 +104,7 @@ export const trilhas = [
       {
         title: 'IV · Grupo de prática',
         kind: 'extra',
-        detail: 'Supervisão e intervisão são insubstituíveis. Entre em contato pelo WhatsApp para conhecer os grupos abertos.',
+        detail: 'Supervisão e intervisão fazem diferença real. Entre em contato pelo WhatsApp para conhecer os grupos abertos.',
         href: 'https://wa.me/5562993776565',
       },
     ],

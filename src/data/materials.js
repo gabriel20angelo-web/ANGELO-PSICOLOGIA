@@ -48,7 +48,7 @@ export const materials = [
     subtitle: 'Heráclito Pinheiro',
     author: 'Heráclito Pinheiro',
     description:
-      'Resumo integral do livro de Heráclito Pinheiro, conectando os conceitos ao pensamento junguiano original. Ideal para uma introdução sólida à psicologia analítica.',
+      'Resumo integral do livro de Heráclito Pinheiro, conectando os conceitos ao pensamento junguiano original. Boa porta de entrada para a psicologia analítica.',
     tags: ['Jung', 'Introdução', 'Psicologia Analítica'],
     image: '/images/pensamento-vivo.jpg',
     price: 'R$ XX,XX',
@@ -84,7 +84,7 @@ export const materials = [
     subtitle: 'Mapa Mental Completo',
     author: 'Material autoral',
     description:
-      'Mapa mental completo sobre atitude psicológica, tipologia junguiana e diagnóstico. Visualização integrada dos conceitos fundamentais para a compreensão da dinâmica psíquica.',
+      'Mapa mental sobre atitude psicológica, tipologia junguiana e diagnóstico. Visualização integrada dos conceitos fundamentais para a compreensão da dinâmica psíquica.',
     tags: ['Tipologia', 'Diagnóstico', 'Psicologia Analítica'],
     image: '/images/atitude-tipologia.jpg',
     price: 'R$ XX,XX',
@@ -116,7 +116,7 @@ export const materials = [
     subtitle: 'Mapa Mental Completo',
     author: 'Material autoral',
     description:
-      'Mapa mental completo sobre a estrutura da consciência, os complexos e o papel do ego na psicologia analítica.',
+      'Mapa mental sobre a estrutura da consciência, os complexos e o papel do ego na psicologia analítica.',
     tags: ['Consciência', 'Complexo', 'Ego'],
     image: '/images/consciencia-complexo-ego.jpg',
     price: 'R$ XX,XX',
@@ -148,7 +148,7 @@ export const materials = [
     subtitle: 'Mapa Mental Completo',
     author: 'Material autoral',
     description:
-      'Mapa mental completo sobre neurose na perspectiva junguiana, os fatores terapêuticos que promovem a cura e os critérios para o fim do processo analítico.',
+      'Mapa mental sobre neurose na perspectiva junguiana, os fatores terapêuticos que promovem a cura e os critérios para o fim do processo analítico.',
     tags: ['Neurose', 'Terapêutica', 'Psicologia Analítica'],
     image: '/images/neurose-fatores.jpg',
     price: 'R$ XX,XX',

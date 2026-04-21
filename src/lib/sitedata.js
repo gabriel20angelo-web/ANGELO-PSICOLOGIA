@@ -71,13 +71,13 @@ export const DEFAULT_HOMEPAGE = {
     lead: 'Estudante de psicologia, estagiário clínico e futuro psicólogo. Aqui você encontra quem eu sou, o que produzo e como a psicologia analítica guia minha prática e meu olhar sobre o mundo.',
   },
   prelude: {
-    body: 'Este lugar é uma oficina, não uma vitrine. Aqui se forja o trabalho de uma vida — entre o consultório, a sala de aula e o caderno aberto. O que você encontra adiante são fragmentos do mesmo gesto: olhar para dentro com rigor, e devolver o que se viu em forma de estudo.',
+    body: 'Aqui você encontra o que estudo, atendo e ensino — materiais, trilhas, anotações de clínica e textos sobre psicologia analítica.',
     tagline: 'γνῶθι σεαυτόν',
   },
   about: {
-    title: 'Entre a sombra e a consciência',
-    paragraph1: 'Atendo em clínica desde o terceiro período da graduação. Entrei na Associação Allos por um processo seletivo rigoroso e, desde então, minha prática foi moldada por supervisão constante, pesquisa e centenas de horas de atendimento.',
-    paragraph2: 'Conduzo grupos de estudo com prática deliberada para estudantes e psicólogos que querem atender melhor. Ministrei dezenas de horas de formação, lidero turmas, conduzo intervisões e participo de grupos pela Liga de Psicologia Analítica da UNICAP — sempre voltando ao mesmo gesto: estudar, atender, supervisionar.',
+    title: 'Sobre',
+    paragraph1: 'Atendo em clínica desde o terceiro período da graduação. Faço estágio na Associação Allos, com supervisão e pesquisa.',
+    paragraph2: 'Também conduzo grupos de estudo para estudantes e psicólogos que buscam se aprimorar na prática clínica. Dou aulas, conduzo intervisões e participo da Liga de Psicologia Analítica da UNICAP.',
     quoteText: 'Quem olha para fora, sonha; quem olha para dentro, desperta.',
     quoteAuthor: 'Carl Gustav Jung',
     credentials: [

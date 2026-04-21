@@ -271,10 +271,6 @@ export function PortraitHero({ className = '', animate = true }) {
       <div className="absolute -top-1 -right-1 w-6 h-6 border-t border-r border-accent/30 pointer-events-none" />
       <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b border-l border-accent/30 pointer-events-none" />
 
-      {/* Frase decorativa abaixo */}
-      <span className="absolute -bottom-6 left-5 font-mono text-[0.6rem] text-text-dim opacity-40 tracking-[0.18em]">
-        psychê · alma · borboleta
-      </span>
     </div>
   );
 }

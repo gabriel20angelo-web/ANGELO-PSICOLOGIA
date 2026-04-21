@@ -22,8 +22,8 @@ function MateriaisHero() {
       eyebrow="Catálogo · Resumos & Mapas Mentais"
       title="Materiais"
       emphasis="de estudo"
-      kicker="Sínteses vivas, feitas no Obsidian"
-      lead="Materiais construídos com horas de prática clínica, supervisão e leitura — não por quem só leu sobre o assunto. Cada item indica seu formato."
+      kicker="Resumos e mapas no Obsidian"
+      lead="Materiais que uso para estudar e ensinar — resumos, mapas e diagramas. Cada item indica seu formato."
       actions={
         <>
           <a
@@ -56,8 +56,8 @@ function Explanation() {
 
   const features = [
     { mark: 'I',   title: 'Feitos no Obsidian',     desc: 'Resumos interconectados, com links entre conceitos e uma estrutura que reflete como o conhecimento realmente se organiza.' },
-    { mark: 'II',  title: 'Mapas mentais completos', desc: 'Diagramas que funcionam sozinhos como material de estudo — alguns são tão detalhados que dispensam o resumo escrito.' },
-    { mark: 'III', title: 'Percepção clínica',      desc: 'Não é cópia de livro. Cada material é misturado com minha percepção, compreensão e experiência de quem atende na prática.' },
+    { mark: 'II',  title: 'Mapas mentais completos', desc: 'Diagramas detalhados — alguns suficientes por si só para estudar, sem precisar do resumo.' },
+    { mark: 'III', title: 'Percepção clínica',      desc: 'Misturados com minha percepção e experiência de atendimento — não só o que está nos livros.' },
   ];
 
   return (
@@ -76,10 +76,10 @@ function Explanation() {
           variants={fadeUp}
           className="font-serif text-[clamp(1.9rem,3.6vw,2.6rem)] text-text-bright leading-[1.05] mb-5 max-w-3xl"
         >
-          Mais do que resumos — são <em className="italic text-accent">sínteses vivas</em>
+          Resumos e <em className="italic text-accent">mapas mentais</em>
         </motion.h2>
         <motion.p variants={fadeUp} className="text-[0.95rem] text-text-dim max-w-2xl leading-[1.85] mb-12">
-          Cada material nasce da interseção entre leitura rigorosa, supervisão clínica e o que acontece de verdade dentro do consultório.
+          Cada material vem da minha leitura, da supervisão e da experiência no consultório.
         </motion.p>
 
         <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">

@@ -133,7 +133,7 @@ export default function Cartography() {
               variants={fadeUp}
               className="font-serif text-[clamp(2rem,4vw,3rem)] text-text-bright leading-[1.05] mb-5 max-w-2xl"
             >
-              O território da <em className="italic text-accent">psiquê</em>
+              Conceitos <em className="italic text-accent">junguianos</em>
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -141,7 +141,7 @@ export default function Cartography() {
             >
               Um mapa vivo dos conceitos junguianos. Passe o mouse sobre cada
               nó para ler o axioma, e veja como as ideias se conectam — como num
-              grafo do Obsidian, mas com séculos de profundidade.
+              grafo do Obsidian, mas com séculos de pensamento por trás.
             </motion.p>
           </div>
 

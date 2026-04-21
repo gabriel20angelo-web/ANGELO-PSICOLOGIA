@@ -643,7 +643,7 @@ export default function BlogPage() {
                 eyebrow="Blog · Reflexões & ensaios"
                 title="Reflexões"
                 emphasis="& ensaios"
-                kicker="O caderno aberto"
+                kicker="Textos"
                 lead="Textos sobre psicologia analítica, clínica, mitologia e o processo de individuação. Atualizado quando há algo a dizer."
               />
             )}

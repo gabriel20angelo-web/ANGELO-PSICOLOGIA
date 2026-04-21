@@ -133,7 +133,7 @@ export default function MaterialsPreview() {
               variants={fadeUp}
               className="font-serif text-[clamp(2rem,4vw,3rem)] text-text-bright leading-[1.05] mb-4"
             >
-              Estude com quem <em className="italic text-accent">pratica</em>
+              Notas de estudo e <em className="italic text-accent">clínica</em>
             </motion.h2>
             <motion.p
               variants={fadeUp}

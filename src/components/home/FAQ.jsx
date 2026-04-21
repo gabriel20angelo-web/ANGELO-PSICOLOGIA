@@ -42,7 +42,7 @@ const faqGroups = [
       {
         question: 'Posso usar os materiais para estudar para concursos?',
         answer:
-          'Sim! O conteúdo é abrangente e cobre os principais conceitos exigidos em provas e concursos da área de psicologia. Os resumos são especialmente úteis para revisão rápida e fixação de conteúdo.',
+          'Sim! O conteúdo cobre os principais conceitos exigidos em provas e concursos da área de psicologia. Os resumos são úteis para revisão rápida e fixação.',
       },
     ],
   },
@@ -54,7 +54,7 @@ const faqGroups = [
       {
         question: 'Os materiais são baseados em quais autores?',
         answer:
-          'Os materiais são elaborados com base nas Obras Completas de C. G. Jung, em autores pós-junguianos consagrados e na experiência de prática clínica e supervisão. Cada resumo e mapa mental passa por revisão cuidadosa para garantir fidelidade conceitual.',
+          'Os materiais são elaborados com base nas Obras Completas de C. G. Jung, em autores pós-junguianos e na minha experiência clínica e de supervisão.',
       },
       {
         question: 'Qual a diferença entre resumo e mapa mental?',
