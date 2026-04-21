@@ -5,6 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { fadeUp, stagger } from '@/lib/constants';
 import SectionLabel from '@/components/SectionLabel';
+import { BranchOrnament, SpiralAccent } from '@/components/illustrations';
 
 const STORAGE_KEY = 'angelo_admin_blog';
 
@@ -47,7 +48,12 @@ export default function BlogPreview() {
   if (posts.length === 0) return null;
 
   return (
-    <section ref={ref} id="blog" className="py-20 px-6 md:px-12">
+    <section ref={ref} id="blog" className="py-20 px-6 md:px-12 relative overflow-hidden">
+      <SpiralAccent
+        className="absolute top-10 -right-20 pointer-events-none hidden md:block"
+        size={260}
+        opacity={0.1}
+      />
       <motion.div initial="hidden" animate={inView ? 'visible' : 'hidden'} variants={stagger} className="max-w-[1100px] mx-auto">
         <SectionLabel label="Blog" />
         <motion.div variants={fadeUp} className="flex items-end justify-between mb-10">

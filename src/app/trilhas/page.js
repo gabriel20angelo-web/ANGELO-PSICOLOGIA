@@ -12,6 +12,12 @@ import { materials } from '@/data/materials';
 import { fadeUp, stagger } from '@/lib/constants';
 import { img } from '@/lib/basepath';
 import { getTrilhas } from '@/lib/sitedata';
+import {
+  OrbitalAccent,
+  AlchemyDivider,
+  GlyphTrio,
+  SpiralAccent,
+} from '@/components/illustrations';
 
 const materialMap = Object.fromEntries(materials.map((m) => [m.id, m]));
 
@@ -203,13 +209,34 @@ export default function TrilhasPage() {
           }
         />
 
-        <div className="max-w-[1180px] mx-auto px-6 md:px-12">
+        <div className="max-w-[1180px] mx-auto px-6 md:px-12 relative">
+          <OrbitalAccent
+            className="absolute -top-20 -right-28 pointer-events-none hidden md:block"
+            size={320}
+            opacity={0.08}
+          />
           <MandalaDivider size={48} opacity={0.25} />
+          <GlyphTrio className="mx-auto mt-4" opacity={0.4} />
         </div>
 
         {trilhas.map((t, i) => (
-          <TrilhaSection key={t.id} trilha={t} index={i} />
+          <div key={t.id}>
+            <TrilhaSection trilha={t} index={i} />
+            {i < trilhas.length - 1 && (
+              <div className="max-w-[1180px] mx-auto px-6 md:px-12 py-2">
+                <AlchemyDivider opacity={0.45} />
+              </div>
+            )}
+          </div>
         ))}
+
+        <div className="max-w-[1180px] mx-auto px-6 md:px-12 py-8 relative">
+          <SpiralAccent
+            className="absolute -bottom-12 -left-24 pointer-events-none hidden md:block"
+            size={240}
+            opacity={0.1}
+          />
+        </div>
       </main>
       <Footer />
     </>

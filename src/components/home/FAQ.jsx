@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
+import { OrbitalAccent } from '@/components/illustrations';
 
 // FAQs agrupadas em 3 blocos editoriais: Entrega · Catálogo · Conteúdo
 const faqGroups = [
@@ -120,14 +121,19 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="py-24 md:py-32 px-6 md:px-12 section-border-t"
+      className="py-24 md:py-32 px-6 md:px-12 section-border-t relative overflow-hidden"
       ref={ref}
     >
+      <OrbitalAccent
+        className="absolute -top-20 -left-32 pointer-events-none hidden lg:block"
+        size={320}
+        opacity={0.07}
+      />
       <motion.div
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
         variants={stagger}
-        className="max-w-[1180px] mx-auto"
+        className="max-w-[1180px] mx-auto relative"
       >
         <SectionLabel label="Dúvidas" />
         <motion.h2

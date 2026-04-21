@@ -7,6 +7,7 @@ import PullQuote from '@/components/ui/PullQuote';
 import DropCap from '@/components/ui/DropCap';
 import { fadeUp, stagger, slideInLeft, slideInRight } from '@/lib/constants';
 import { getHomepage, DEFAULT_HOMEPAGE } from '@/lib/sitedata';
+import { QuaternioSigil, SpiralAccent } from '@/components/illustrations';
 
 export default function About() {
   const ref = useRef(null);
@@ -35,6 +36,18 @@ export default function About() {
           backgroundSize: '64px 64px',
         }}
         aria-hidden
+      />
+
+      {/* Accents ornamentais */}
+      <SpiralAccent
+        className="absolute top-10 right-4 pointer-events-none hidden lg:block"
+        size={220}
+        opacity={0.08}
+      />
+      <QuaternioSigil
+        className="absolute bottom-16 left-8 pointer-events-none hidden lg:block"
+        size={72}
+        opacity={0.18}
       />
 
       <motion.div

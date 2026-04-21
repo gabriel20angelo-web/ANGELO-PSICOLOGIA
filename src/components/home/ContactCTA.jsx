@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger } from '@/lib/constants';
+import { QuaternioSigil, BranchOrnament } from '@/components/illustrations';
 
 const WHATSAPP_URL = 'https://wa.me/5562993776565';
 
@@ -118,6 +119,9 @@ export default function ContactCTA() {
         className="relative max-w-[1100px] mx-auto"
       >
         <div className="text-center mb-14">
+          <div className="flex justify-center mb-4">
+            <QuaternioSigil size={56} opacity={0.4} animated={true} />
+          </div>
           <SectionLabel label="Contato" />
           <motion.h2
             variants={fadeUp}

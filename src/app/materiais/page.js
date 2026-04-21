@@ -12,6 +12,12 @@ import { MaterialCardFull } from '@/components/materiais/MaterialCard';
 import { materials, comingSoon, contentTypeLabels } from '@/data/materials';
 import { fadeUp, stagger } from '@/lib/constants';
 import { img } from '@/lib/basepath';
+import {
+  SpiralAccent,
+  BranchOrnament,
+  QuaternioSigil,
+  DiamondChain,
+} from '@/components/illustrations';
 
 /* ========================================
    HERO
@@ -485,7 +491,13 @@ function Catalog() {
 
         {/* EM BREVE — abaixo de tudo */}
         {comingSoon.length > 0 && (
-          <motion.div variants={fadeUp} className="mt-20">
+          <motion.div variants={fadeUp} className="mt-20 relative">
+            <QuaternioSigil
+              className="absolute -top-10 right-0 pointer-events-none hidden md:block"
+              size={56}
+              opacity={0.3}
+              animated={false}
+            />
             <div className="flex items-baseline gap-4 mb-6">
               <span className="font-mono text-[0.62rem] text-accent tracking-[0.25em] uppercase">Em breve</span>
               <span className="flex-1 h-px bg-border-subtle" />
@@ -517,10 +529,19 @@ export default function MateriaisPage() {
       <Navbar />
       <main>
         <MateriaisHero />
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 relative">
+          <SpiralAccent
+            className="absolute -top-4 -right-16 pointer-events-none hidden md:block"
+            size={220}
+            opacity={0.1}
+          />
           <MandalaDivider size={48} opacity={0.25} />
+          <BranchOrnament className="mx-auto mt-4" opacity={0.45} />
         </div>
         <Explanation />
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-4">
+          <DiamondChain opacity={0.5} />
+        </div>
         <Catalog />
       </main>
       <Footer />

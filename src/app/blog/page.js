@@ -7,6 +7,11 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PageHero from '@/components/ui/PageHero';
 import AlchemicalTimeline from '@/components/ui/AlchemicalTimeline';
+import {
+  BranchOrnament,
+  SpiralAccent,
+  DiamondChain,
+} from '@/components/illustrations';
 
 const STORAGE_KEY = 'angelo_admin_blog';
 const SERIES_STORAGE_KEY = 'angelo_admin_blog_series';
@@ -648,9 +653,17 @@ export default function BlogPage() {
               />
             )}
 
-            <div className="max-w-[1180px] mx-auto px-6 md:px-12 pb-24">
+            <div className="max-w-[1180px] mx-auto px-6 md:px-12 pb-24 relative">
+              <SpiralAccent
+                className="absolute top-20 -left-24 pointer-events-none hidden lg:block"
+                size={260}
+                opacity={0.08}
+              />
+              <div className="flex justify-center mb-8">
+                <BranchOrnament opacity={0.4} />
+              </div>
               {publishedPosts.length > 0 && (
-                <div className="flex flex-col gap-6 mb-12 pb-8 border-b border-border-subtle">
+                <div className="flex flex-col gap-6 mb-12 pb-8 border-b border-border-subtle relative">
                   <div className="relative border-b border-border-subtle hover:border-border-hover focus-within:border-accent/50 transition-colors max-w-md">
                     <svg
                       className="absolute left-1 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim"

@@ -7,6 +7,12 @@ import Footer from '@/components/Footer';
 import CourseCardComponent from '@/components/cursos/CourseCard';
 import CategoryCarousel from '@/components/cursos/CategoryCarousel';
 import PageHero from '@/components/ui/PageHero';
+import {
+  GlyphTrio,
+  QuaternioSigil,
+  OrbitalAccent,
+  DiamondChain,
+} from '@/components/illustrations';
 
 /* ========================================
    ANIMATION VARIANTS
@@ -481,8 +487,13 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
         />
       )}
 
+      {/* Ornamento alquímico entre hero e lista */}
+      <div className="max-w-[1180px] mx-auto px-6 md:px-12 pt-8 flex justify-center">
+        <GlyphTrio opacity={0.45} />
+      </div>
+
       {/* Continuar assistindo — só se houver progresso */}
-      <div className="pt-12">
+      <div className="pt-8">
         <ContinueWatching
           courses={publishedCourses}
           progressMap={progressMap}
@@ -490,9 +501,20 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
         />
       </div>
 
+      {/* Divisor entre ContinueWatching e filtros */}
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-6">
+        <DiamondChain opacity={0.5} />
+      </div>
+
       {/* Filtros: categoria + busca */}
       {publishedCourses.length > 0 && (
-        <section className="max-w-[1280px] mx-auto px-6 md:px-12 mb-10">
+        <section className="max-w-[1280px] mx-auto px-6 md:px-12 mb-10 relative">
+          <QuaternioSigil
+            className="absolute -top-2 right-0 pointer-events-none hidden md:block"
+            size={48}
+            opacity={0.3}
+            animated={false}
+          />
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-6 border-b border-border-subtle">
             {/* Filtros de categoria */}
             <div className="flex flex-wrap gap-2 items-center">
@@ -547,7 +569,12 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
       {/* Conteúdo principal */}
       {isFiltering ? (
         // Grid de resultados filtrados
-        <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-24">
+        <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-24 relative overflow-hidden">
+          <OrbitalAccent
+            className="absolute -top-20 -left-32 pointer-events-none hidden lg:block"
+            size={320}
+            opacity={0.07}
+          />
           <p className="font-mono text-[0.6rem] text-text-dim tracking-[0.2em] uppercase mb-6">
             {filteredCourses.length} {filteredCourses.length === 1 ? 'curso' : 'cursos'}
           </p>
