@@ -17,6 +17,9 @@ import {
   AlchemyDivider,
   GlyphTrio,
   SpiralAccent,
+  TriangleCompass,
+  DottedCircle,
+  HexRing,
 } from '@/components/illustrations';
 
 const materialMap = Object.fromEntries(materials.map((m) => [m.id, m]));
@@ -111,14 +114,23 @@ function TrilhaSection({ trilha, index }) {
   const inView = useInView(ref, { once: true, margin: '-100px' });
   const tone = TRILHA_TONE[trilha.archetype] || TRILHA_TONE.Self;
   const roman = ['I', 'II', 'III', 'IV', 'V'][index] || (index + 1);
+  // Cada trilha ganha um accent geométrico diferente
+  const Accents = [HexRing, TriangleCompass, DottedCircle];
+  const SideAccent = Accents[index % Accents.length];
 
   return (
-    <section ref={ref} id={trilha.id} className="py-20 md:py-24 px-6 md:px-12 relative">
+    <section ref={ref} id={trilha.id} className="py-20 md:py-24 px-6 md:px-12 relative overflow-hidden">
+      <SideAccent
+        className={`absolute ${index % 2 === 0 ? 'top-12 -right-6' : 'top-12 -left-6'} pointer-events-none hidden md:block`}
+        size={110}
+        opacity={0.18}
+        animated={true}
+      />
       <motion.div
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
         variants={stagger}
-        className="max-w-[1180px] mx-auto"
+        className="max-w-[1180px] mx-auto relative"
       >
         {/* Cabeçalho da trilha */}
         <header className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 lg:gap-12 mb-12 items-start">

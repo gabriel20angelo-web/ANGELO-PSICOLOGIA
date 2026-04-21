@@ -5,6 +5,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { fadeUp, stagger } from '@/lib/constants';
 import SectionLabel from '@/components/SectionLabel';
 import ArchetypeBadge, { ARCHETYPE_TONE } from '@/components/ui/ArchetypeBadge';
+import { VesicaPiscis, GoldenArc } from '@/components/illustrations';
 
 const testimonials = [
   {
@@ -121,9 +122,19 @@ export default function Testimonials() {
   }, [tab]);
 
   return (
-    <section className="py-24 md:py-32 px-6 md:px-12" ref={ref}>
+    <section className="py-24 md:py-32 px-6 md:px-12 relative overflow-hidden" ref={ref}>
+      <VesicaPiscis
+        className="absolute top-10 -right-12 pointer-events-none hidden md:block"
+        size={220}
+        opacity={0.1}
+      />
+      <GoldenArc
+        className="absolute -bottom-12 -left-8 pointer-events-none hidden lg:block"
+        size={260}
+        opacity={0.1}
+      />
       <motion.div
-        className="max-w-[1180px] mx-auto"
+        className="max-w-[1180px] mx-auto relative"
         variants={stagger}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}

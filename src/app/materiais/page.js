@@ -17,6 +17,9 @@ import {
   BranchOrnament,
   QuaternioSigil,
   DiamondChain,
+  ConcentricSquares,
+  GoldenArc,
+  VesicaPiscis,
 } from '@/components/illustrations';
 
 /* ========================================
@@ -377,12 +380,22 @@ function Catalog() {
   };
 
   return (
-    <section id="catalogo" ref={ref} className="py-20 md:py-24 px-6 md:px-12">
+    <section id="catalogo" ref={ref} className="py-20 md:py-24 px-6 md:px-12 relative overflow-hidden">
+      <ConcentricSquares
+        className="absolute top-10 -right-8 pointer-events-none hidden md:block"
+        size={140}
+        opacity={0.15}
+      />
+      <VesicaPiscis
+        className="absolute bottom-10 -left-10 pointer-events-none hidden lg:block"
+        size={200}
+        opacity={0.1}
+      />
       <motion.div
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
         variants={stagger}
-        className="max-w-[1280px] mx-auto"
+        className="max-w-[1280px] mx-auto relative"
       >
         <div className="mb-10">
           <SectionLabel label="Catálogo" />

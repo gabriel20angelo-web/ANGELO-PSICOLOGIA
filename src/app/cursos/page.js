@@ -12,6 +12,9 @@ import {
   QuaternioSigil,
   OrbitalAccent,
   DiamondChain,
+  GoldenArc,
+  HexRing,
+  DottedCircle,
 } from '@/components/illustrations';
 
 /* ========================================
@@ -574,6 +577,21 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
             className="absolute -top-20 -left-32 pointer-events-none hidden lg:block"
             size={320}
             opacity={0.07}
+          />
+          <HexRing
+            className="absolute top-12 -right-4 pointer-events-none hidden md:block"
+            size={110}
+            opacity={0.18}
+          />
+          <GoldenArc
+            className="absolute -bottom-12 -left-12 pointer-events-none hidden lg:block"
+            size={240}
+            opacity={0.12}
+          />
+          <DottedCircle
+            className="absolute top-40 right-12 pointer-events-none hidden lg:block"
+            size={60}
+            opacity={0.35}
           />
           <p className="font-mono text-[0.6rem] text-text-dim tracking-[0.2em] uppercase mb-6">
             {filteredCourses.length} {filteredCourses.length === 1 ? 'curso' : 'cursos'}

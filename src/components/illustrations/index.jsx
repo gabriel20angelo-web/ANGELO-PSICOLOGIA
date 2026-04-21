@@ -143,37 +143,56 @@ export function NebulaField({ count = 14, className = '' }) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-// ShootingStars — estrelas cadentes ocasionais
-// Geram trilhas angulares atravessando o container em intervalos
-// randomizados. Use em fundos escuros (Hero, /bio, ContactCTA).
+// ShootingStars — meteoros / estrelas cadentes ocasionais
+//
+// Cada meteoro tem: (a) um ponto brilhante (cabeça) + (b) uma trilha
+// fading atrás dela. Movimento e trilha SEMPRE alinhados — a trilha
+// fica exatamente ao longo do vetor de movimento, o que dá a
+// percepção correta de "estrela cadente" (em vez de uma barra
+// flutuando em direção diferente da que ela aponta).
+//
+// Cai diagonalmente (padrão: ~28° abaixo da horizontal), começando
+// em algum ponto do quadrante superior esquerdo.
 // ══════════════════════════════════════════════════════════════════
 export function ShootingStars({
   count = 3,
   className = '',
   color = '#E8DDD0',
   accentColor = '#B48C50',
-  angleDeg = 28,  // inclinação da queda (0 = horizontal)
+  angleDeg = 28,      // inclinação da queda
+  travelPx = 620,     // distância percorrida
 }) {
   const [shots, setShots] = useState([]);
 
   useEffect(() => {
     setShots(
-      Array.from({ length: count }, (_, i) => ({
-        id: i,
-        startX: 60 + Math.random() * 35,   // começa no quadrante sup-direito
-        startY: -10 + Math.random() * 25,
-        length: 90 + Math.random() * 80,   // comprimento da trilha (px)
-        duration: 1.1 + Math.random() * 0.9,
-        delay: 3 + i * 6 + Math.random() * 8,
-        cycle: 14 + Math.random() * 14,    // intervalo entre passagens
-        color: Math.random() < 0.3 ? accentColor : color,
-        angle: angleDeg + (Math.random() - 0.5) * 10,
-      }))
+      Array.from({ length: count }, (_, i) => {
+        const jitter = (Math.random() - 0.5) * 10;
+        const angleFinal = angleDeg + jitter;
+        const rad = (angleFinal * Math.PI) / 180;
+        const travel = travelPx + Math.random() * 160;
+        return {
+          id: i,
+          startX: 4 + Math.random() * 30,        // quadrante sup-esquerdo
+          startY: 2 + Math.random() * 22,
+          angleDeg: angleFinal,
+          dx: Math.cos(rad) * travel,
+          dy: Math.sin(rad) * travel,
+          trailLen: 110 + Math.random() * 90,
+          duration: 1.1 + Math.random() * 0.7,
+          delay: 4 + i * 7 + Math.random() * 10,
+          cycle: 16 + Math.random() * 14,
+          color: Math.random() < 0.3 ? accentColor : color,
+        };
+      })
     );
-  }, [count, color, accentColor, angleDeg]);
+  }, [count, color, accentColor, angleDeg, travelPx]);
 
   return (
-    <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`} aria-hidden>
+    <div
+      className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}
+      aria-hidden
+    >
       {shots.map((s) => (
         <motion.div
           key={s.id}
@@ -181,28 +200,53 @@ export function ShootingStars({
           style={{
             left: `${s.startX}%`,
             top: `${s.startY}%`,
-            width: s.length,
-            height: 1,
-            background: `linear-gradient(90deg, transparent, ${s.color} 85%, ${s.color})`,
-            transform: `rotate(${s.angle}deg)`,
-            transformOrigin: 'left center',
-            filter: `drop-shadow(0 0 4px ${s.color})`,
+            width: 0,
+            height: 0,
           }}
-          initial={{ opacity: 0, x: 0, y: 0 }}
+          initial={{ x: 0, y: 0, opacity: 0 }}
           animate={{
+            x: [0, s.dx],
+            y: [0, s.dy],
             opacity: [0, 1, 1, 0],
-            x: [0, -300, -520, -700],
-            y: [0, 160, 280, 380],
           }}
           transition={{
             duration: s.duration,
             delay: s.delay,
             repeat: Infinity,
             repeatDelay: s.cycle,
-            ease: 'easeIn',
-            times: [0, 0.1, 0.8, 1],
+            ease: 'easeOut',
+            times: [0, 0.08, 0.88, 1],
           }}
-        />
+        >
+          {/* Trilha — estende PARA TRÁS a partir da cabeça, no mesmo ângulo do movimento */}
+          <span
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: -1,
+              width: s.trailLen,
+              height: 2,
+              borderRadius: '999px',
+              background: `linear-gradient(90deg, transparent 0%, ${s.color}00 5%, ${s.color}cc 75%, ${s.color} 95%, #ffffff 100%)`,
+              transform: `rotate(${s.angleDeg}deg)`,
+              transformOrigin: '100% 50%',
+              filter: `drop-shadow(0 0 4px ${s.color})`,
+            }}
+          />
+          {/* Cabeça — ponto luminoso que fica no final da trilha */}
+          <span
+            style={{
+              position: 'absolute',
+              right: -2,
+              top: -2,
+              width: 4,
+              height: 4,
+              borderRadius: '999px',
+              background: '#ffffff',
+              boxShadow: `0 0 10px 2px ${s.color}`,
+            }}
+          />
+        </motion.div>
       ))}
     </div>
   );
@@ -402,6 +446,216 @@ export function OrbitalAccent({ className = '', size = 240, opacity = 0.08 }) {
       <circle cx="15" cy="120" r="2" fill="#B48C50" fillOpacity="0.6" stroke="none" />
       <circle cx="120" cy="15" r="2" fill="#B48C50" fillOpacity="0.5" stroke="none" />
     </motion.svg>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════
+// VesicaPiscis — dois círculos sobrepostos (símbolo sagrado junguiano)
+// Accent de canto. Evoca a interseção consciente/inconsciente.
+// ══════════════════════════════════════════════════════════════════
+export function VesicaPiscis({ className = '', size = 160, opacity = 0.14, animated = true }) {
+  const Wrap = animated ? motion.svg : 'svg';
+  const wrapProps = animated
+    ? {
+        animate: { rotate: [0, 5, 0, -5, 0] },
+        transition: { duration: 30, repeat: Infinity, ease: 'easeInOut' },
+      }
+    : {};
+  return (
+    <Wrap
+      width={size}
+      height={size}
+      viewBox="0 0 120 120"
+      className={className}
+      style={{ opacity }}
+      fill="none"
+      stroke="#B48C50"
+      strokeWidth="0.6"
+      {...wrapProps}
+    >
+      <circle cx="45" cy="60" r="32" />
+      <circle cx="75" cy="60" r="32" />
+      <line x1="60" y1="28" x2="60" y2="92" strokeWidth="0.35" strokeDasharray="1 2" />
+      <circle cx="60" cy="60" r="1.8" fill="#B48C50" fillOpacity="0.7" stroke="none" />
+    </Wrap>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════
+// HexRing — hexágono com pontos nos vértices
+// ══════════════════════════════════════════════════════════════════
+export function HexRing({ className = '', size = 84, opacity = 0.22, animated = true }) {
+  const Wrap = animated ? motion.svg : 'svg';
+  const wrapProps = animated
+    ? {
+        animate: { rotate: 360 },
+        transition: { duration: 220, repeat: Infinity, ease: 'linear' },
+      }
+    : {};
+  const verts = Array.from({ length: 6 }, (_, i) => {
+    const a = (i * 60 - 30) * (Math.PI / 180);
+    return { x: 50 + Math.cos(a) * 38, y: 50 + Math.sin(a) * 38 };
+  });
+  const d = verts.map((v, i) => `${i === 0 ? 'M' : 'L'}${v.x} ${v.y}`).join(' ') + ' Z';
+  return (
+    <Wrap
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      className={className}
+      style={{ opacity }}
+      fill="none"
+      stroke="#B48C50"
+      {...wrapProps}
+    >
+      <circle cx="50" cy="50" r="46" strokeWidth="0.3" />
+      <path d={d} strokeWidth="0.55" />
+      {verts.map((v, i) => (
+        <circle
+          key={i}
+          cx={v.x}
+          cy={v.y}
+          r="2"
+          fill="#B48C50"
+          fillOpacity={i % 2 === 0 ? 0.8 : 0.4}
+          stroke="none"
+        />
+      ))}
+      <circle cx="50" cy="50" r="3" fill="#B48C50" fillOpacity="0.6" stroke="none" />
+    </Wrap>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ConcentricSquares — quadrados encadeados rotacionados
+// Accent geométrico, bom para cantos internos.
+// ══════════════════════════════════════════════════════════════════
+export function ConcentricSquares({ className = '', size = 72, opacity = 0.2, animated = true }) {
+  const Wrap = animated ? motion.svg : 'svg';
+  const wrapProps = animated
+    ? {
+        animate: { rotate: 360 },
+        transition: { duration: 140, repeat: Infinity, ease: 'linear' },
+      }
+    : {};
+  return (
+    <Wrap
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      className={className}
+      style={{ opacity }}
+      fill="none"
+      stroke="#B48C50"
+      strokeWidth="0.55"
+      {...wrapProps}
+    >
+      <rect x="10" y="10" width="80" height="80" />
+      <rect x="10" y="10" width="80" height="80" transform="rotate(45 50 50)" />
+      <rect x="24" y="24" width="52" height="52" strokeWidth="0.4" />
+      <rect x="24" y="24" width="52" height="52" transform="rotate(45 50 50)" strokeWidth="0.4" />
+      <circle cx="50" cy="50" r="4" fill="#B48C50" fillOpacity="0.7" stroke="none" />
+    </Wrap>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TriangleCompass — triângulo equilátero com pontos nos vértices
+// ══════════════════════════════════════════════════════════════════
+export function TriangleCompass({ className = '', size = 90, opacity = 0.25, inverted = false, animated = false }) {
+  const Wrap = animated ? motion.svg : 'svg';
+  const wrapProps = animated
+    ? {
+        animate: { rotate: inverted ? -360 : 360 },
+        transition: { duration: 200, repeat: Infinity, ease: 'linear' },
+      }
+    : {};
+  const p1 = inverted ? '50,88' : '50,12';
+  const p2 = inverted ? '12,22' : '12,78';
+  const p3 = inverted ? '88,22' : '88,78';
+  return (
+    <Wrap
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      className={className}
+      style={{ opacity }}
+      fill="none"
+      stroke="#B48C50"
+      strokeWidth="0.6"
+      {...wrapProps}
+    >
+      <circle cx="50" cy="50" r="46" strokeWidth="0.3" />
+      <polygon points={`${p1} ${p2} ${p3}`} />
+      {[p1, p2, p3].map((p, i) => {
+        const [x, y] = p.split(',').map(Number);
+        return (
+          <circle key={i} cx={x} cy={y} r="2.2" fill="#B48C50" fillOpacity="0.7" stroke="none" />
+        );
+      })}
+      <circle cx="50" cy="50" r="2.5" fill="#B48C50" fillOpacity="0.5" stroke="none" />
+    </Wrap>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════
+// GoldenArc — arco tipo proporção áurea (curva elegante)
+// Muito bom para cantos superiores/inferiores de seções.
+// ══════════════════════════════════════════════════════════════════
+export function GoldenArc({ className = '', size = 180, opacity = 0.14 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 200 200"
+      className={className}
+      style={{ opacity }}
+      fill="none"
+      stroke="#B48C50"
+      strokeWidth="0.55"
+    >
+      {/* Arcos concêntricos crescentes */}
+      <path d="M 20 180 A 160 160 0 0 1 180 20" />
+      <path d="M 40 180 A 140 140 0 0 1 180 40" strokeWidth="0.4" />
+      <path d="M 60 180 A 120 120 0 0 1 180 60" strokeWidth="0.35" />
+      <path d="M 80 180 A 100 100 0 0 1 180 80" strokeWidth="0.3" />
+      <path d="M 100 180 A 80 80 0 0 1 180 100" strokeWidth="0.25" strokeDasharray="2 2" />
+      {/* Marca de canto */}
+      <circle cx="180" cy="180" r="3" fill="#B48C50" fillOpacity="0.6" stroke="none" />
+    </svg>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════
+// DottedCircle — círculo pontilhado (não linha cheia)
+// ══════════════════════════════════════════════════════════════════
+export function DottedCircle({ className = '', size = 70, opacity = 0.3, dots = 24 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      className={className}
+      style={{ opacity }}
+      fill="none"
+    >
+      {Array.from({ length: dots }).map((_, i) => {
+        const angle = (i / dots) * Math.PI * 2;
+        const x = 50 + Math.cos(angle) * 44;
+        const y = 50 + Math.sin(angle) * 44;
+        return (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={i % 4 === 0 ? 1.8 : 1}
+            fill="#B48C50"
+            fillOpacity={i % 4 === 0 ? 0.8 : 0.4}
+          />
+        );
+      })}
+      <circle cx="50" cy="50" r="22" stroke="#B48C50" strokeWidth="0.35" strokeDasharray="1 2" />
+    </svg>
   );
 }
 

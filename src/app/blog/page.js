@@ -11,6 +11,9 @@ import {
   BranchOrnament,
   SpiralAccent,
   DiamondChain,
+  HexRing,
+  TriangleCompass,
+  GoldenArc,
 } from '@/components/illustrations';
 
 const STORAGE_KEY = 'angelo_admin_blog';
@@ -658,6 +661,23 @@ export default function BlogPage() {
                 className="absolute top-20 -left-24 pointer-events-none hidden lg:block"
                 size={260}
                 opacity={0.08}
+              />
+              <HexRing
+                className="absolute top-24 -right-6 pointer-events-none hidden md:block"
+                size={100}
+                opacity={0.18}
+              />
+              <TriangleCompass
+                className="absolute bottom-20 right-0 pointer-events-none hidden lg:block"
+                size={120}
+                opacity={0.15}
+                inverted
+                animated
+              />
+              <GoldenArc
+                className="absolute -bottom-10 -left-10 pointer-events-none hidden lg:block"
+                size={240}
+                opacity={0.12}
               />
               <div className="flex justify-center mb-8">
                 <BranchOrnament opacity={0.4} />
