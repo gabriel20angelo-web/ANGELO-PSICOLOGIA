@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import PageHero from '@/components/ui/PageHero';
 
 // Scroll progress por post — barra fina no topo, abaixo da Navbar
 function ReadingProgressBar({ targetRef }) {
@@ -346,36 +347,85 @@ export default function BlogPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-28 pb-20 px-6 md:px-12">
-        <div className="max-w-[1100px] mx-auto">
-          <AnimatePresence mode="wait">
-            {selectedPost ? (
-              <BlogPostView key="post" post={selectedPost} allPosts={allPosts}
-                seriesList={seriesList} onBack={handleBack} onNavigate={handleSelectPost} />
-            ) : (
-              <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-accent font-sans mb-3">Blog</p>
-                  <h1 className="font-serif text-3xl md:text-4xl text-text-bright mb-4">Reflexoes e ensaios</h1>
-                  <p className="text-text-dim font-sans text-sm max-w-lg leading-relaxed">
-                    Textos sobre psicologia analitica, clinica, mitologia e o processo de individuacao.
-                  </p>
-                </motion.div>
+      <main className="min-h-screen">
+        {selectedPost ? (
+          <div className="pt-28 pb-20 px-6 md:px-12">
+            <div className="max-w-[1100px] mx-auto">
+              <AnimatePresence mode="wait">
+                <BlogPostView
+                  key="post"
+                  post={selectedPost}
+                  allPosts={allPosts}
+                  seriesList={seriesList}
+                  onBack={handleBack}
+                  onNavigate={handleSelectPost}
+                />
+              </AnimatePresence>
+            </div>
+          </div>
+        ) : (
+          <>
+            <PageHero
+              meta={[
+                ['VOL.', 'III · Blog'],
+                ['CAMPO', 'Reflexões · Ensaios · Notas'],
+                ['TOM',   'Editorial · Junguiano'],
+              ]}
+              title="Reflexões"
+              emphasis="& ensaios"
+              kicker="O caderno aberto"
+              lead="Textos sobre psicologia analítica, clínica, mitologia e o processo de individuação. Atualizado quando há algo a dizer."
+            />
+
+            <div className="max-w-[1180px] mx-auto px-6 md:px-12 pb-24">
+              <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 
                 {publishedPosts.length > 0 && (
-                  <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                    <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Buscar publicacoes..."
-                      className="w-full sm:max-w-xs bg-bg-card border border-border-subtle rounded-lg px-4 py-2.5 text-sm text-text-bright font-sans placeholder:text-text-dim/40 focus:outline-none focus:border-accent/50 transition-colors" />
+                  <div className="flex flex-col gap-6 mb-12 pb-8 border-b border-border-subtle">
+                    {/* Input editorial — sem rounded gigante */}
+                    <div className="relative border-b border-border-subtle hover:border-border-hover focus-within:border-accent/50 transition-colors max-w-md">
+                      <svg
+                        className="absolute left-1 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      <input
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Buscar publicações…"
+                        className="w-full pl-9 pr-4 py-3 bg-transparent text-text-bright placeholder:text-text-dim/50 focus:outline-none font-serif italic text-base"
+                      />
+                    </div>
+
+                    {/* Tag rail horizontal — pills mono */}
                     {allTags.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        <button onClick={() => setSelectedTag('')}
-                          className={`px-3 py-1.5 text-xs font-sans rounded-full transition-all ${!selectedTag ? 'bg-accent text-bg font-semibold' : 'bg-bg-card text-text-dim border border-border-subtle hover:border-accent/30'}`}>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <span className="font-mono text-[0.55rem] text-text-dim/70 tracking-[0.22em] uppercase mr-2">
+                          Filtrar
+                        </span>
+                        <button
+                          onClick={() => setSelectedTag('')}
+                          className={`px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.18em] uppercase transition-all ${
+                            !selectedTag
+                              ? 'bg-accent text-bg'
+                              : 'border border-border-subtle text-text-dim hover:border-accent/40 hover:text-accent'
+                          }`}
+                        >
                           Todos
                         </button>
                         {allTags.map((tag) => (
-                          <button key={tag} onClick={() => setSelectedTag(tag === selectedTag ? '' : tag)}
-                            className={`px-3 py-1.5 text-xs font-sans rounded-full transition-all ${selectedTag === tag ? 'bg-accent text-bg font-semibold' : 'bg-bg-card text-text-dim border border-border-subtle hover:border-accent/30'}`}>
+                          <button
+                            key={tag}
+                            onClick={() => setSelectedTag(tag === selectedTag ? '' : tag)}
+                            className={`px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.18em] uppercase transition-all ${
+                              selectedTag === tag
+                                ? 'bg-accent text-bg'
+                                : 'border border-border-subtle text-text-dim hover:border-accent/40 hover:text-accent'
+                            }`}
+                          >
                             {tag}
                           </button>
                         ))}
@@ -401,9 +451,9 @@ export default function BlogPage() {
                   </div>
                 )}
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+            </div>
+          </>
+        )}
       </main>
       <Footer />
     </>

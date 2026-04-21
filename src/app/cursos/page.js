@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CourseCardComponent from '@/components/cursos/CourseCard';
 import CategoryCarousel from '@/components/cursos/CategoryCarousel';
+import PageHero from '@/components/ui/PageHero';
 
 /* ========================================
    ANIMATION VARIANTS
@@ -279,32 +280,36 @@ function CourseListing({ courses, categories, progressMap, onNavigate }) {
 
   return (
     <main className="min-h-screen">
-      {/* Hero */}
-      <section className="relative pt-32 md:pt-40 pb-16 px-6 md:px-12 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
-        <motion.div initial="hidden" animate="visible" variants={stagger}
-          className="relative z-10 max-w-[900px] mx-auto text-center">
-          <motion.p variants={fadeUp} className="font-mono text-[0.68rem] text-text-dim tracking-[0.3em] uppercase mb-6">
-            Cursos &middot; Psicologia
-          </motion.p>
-          <motion.h1 variants={fadeUp} className="font-serif text-[clamp(2.2rem,5vw,3.8rem)] text-text-bright leading-tight mb-6">
-            Cursos de{' '}<em className="italic text-accent">Psicologia</em>
-          </motion.h1>
-          <motion.p variants={fadeUp} className="text-[1rem] text-text-dim max-w-xl mx-auto leading-[1.85]">
-            Aprofunde seus conhecimentos com cursos pensados para a pratica clinica e o desenvolvimento pessoal.
-          </motion.p>
-        </motion.div>
-      </section>
+      <PageHero
+        meta={[
+          ['VOL.', 'II · Formação'],
+          ['CAMPO', 'Cursos · Aulas em vídeo'],
+          ['MÉTODO', 'Prática deliberada'],
+        ]}
+        title="Cursos"
+        emphasis="& formação"
+        kicker="Aprofunde-se em psicologia analítica"
+        lead="Cursos pensados para a prática clínica e o desenvolvimento pessoal — assista no seu ritmo, marque progresso, retome de onde parou."
+      />
 
-      {/* Search */}
-      <section className="max-w-[1100px] mx-auto px-6 md:px-12 mb-10">
-        <div className="relative">
-          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      {/* Search — agora editorial, sem rounded gigante */}
+      <section className="max-w-[1180px] mx-auto px-6 md:px-12 mb-12">
+        <div className="relative border-b border-border-subtle hover:border-border-hover focus-within:border-accent/50 transition-colors">
+          <svg
+            className="absolute left-1 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <input type="text" placeholder="Buscar cursos..." value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-bg-card border border-border-subtle rounded-xl text-text placeholder:text-text-dim/50 focus:outline-none focus:border-accent/30 transition-colors font-sans text-sm" />
+          <input
+            type="text"
+            placeholder="Buscar cursos…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-4 bg-transparent text-text-bright placeholder:text-text-dim/50 focus:outline-none font-serif italic text-base"
+          />
         </div>
       </section>
 

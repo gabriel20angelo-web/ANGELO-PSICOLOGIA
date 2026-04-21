@@ -5,60 +5,22 @@ import { useRef } from 'react';
 import SectionLabel from '@/components/SectionLabel';
 import { fadeUp, stagger, slideInLeft, slideInRight } from '@/lib/constants';
 
-function AnimatedCounter({ value, suffix = '', delay = 0 }) {
-  return (
-    <motion.span
-      initial={{ opacity: 0, scale: 0.5 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
-      className="font-serif text-4xl text-accent leading-none"
-    >
-      {value}
-      {suffix}
-    </motion.span>
-  );
-}
-
-const stats = [
-  { value: '120', suffix: '+', label: 'Profissionais formados' },
-  { value: '10', suffix: '+', label: 'Grupos de estudo conduzidos' },
-];
-
-// Ficha bibliográfica — label mono + valor curto
+// Ficha de atuação — agora em formato de "selos" de identidade clínica.
+// Cada item vira uma linha com símbolo + label curto + descritor.
 const credentials = [
-  {
-    label: 'Estágio',
-    value: 'Clínico — Associação Allos',
-  },
-  {
-    label: 'Pesquisa',
-    value: 'Evolução de psicoterapeutas com dados de competência',
-  },
-  {
-    label: 'Facilitação',
-    value: 'Liga de Psicologia Analítica · UNICAP',
-  },
-  {
-    label: 'Formação',
-    value: 'Intervisão e supervisão clínica',
-  },
-  {
-    label: 'Método',
-    value: 'Prática deliberada para psicoterapeutas',
-  },
-  {
-    label: 'Atuação',
-    value: 'Plantão psicológico',
-  },
+  { mark: '◆', label: 'Estágio',     detail: 'Clínico · Associação Allos' },
+  { mark: '◇', label: 'Facilitação', detail: 'Liga de Psicologia Analítica · UNICAP' },
+  { mark: '◆', label: 'Formação',    detail: 'Intervisão e supervisão clínica' },
+  { mark: '◇', label: 'Método',      detail: 'Prática deliberada para psicoterapeutas' },
+  { mark: '◆', label: 'Atuação',     detail: 'Plantão psicológico' },
 ];
 
 // Timeline horizontal de marcos — caminho de formação
 const milestones = [
-  { year: 'III', label: 'Início clínico', detail: '3º período da graduação' },
-  { year: 'Allos', label: 'Estágio', detail: 'Processo seletivo Allos' },
-  { year: '+120', label: 'Formação', detail: 'Profissionais facilitados' },
-  { year: 'Hoje', label: 'Pesquisa', detail: 'Dados de competência clínica' },
+  { year: 'III',    label: 'Início clínico', detail: '3º período da graduação' },
+  { year: 'Allos',  label: 'Estágio',         detail: 'Processo seletivo' },
+  { year: 'UNICAP', label: 'Liga',            detail: 'Psicologia Analítica' },
+  { year: 'Hoje',   label: 'Clínica',         detail: 'Atendimento e ensino' },
 ];
 
 export default function About() {
@@ -96,55 +58,50 @@ export default function About() {
           Entre a <em className="italic text-accent">sombra</em> e a consciência
         </motion.h2>
 
-        {/* Grid 5fr / 7fr — coluna estreita de identidade + coluna larga de narrativa */}
+        {/* Grid 5fr / 7fr — coluna de identidade + coluna de narrativa */}
         <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-12 lg:gap-20">
-          {/* Coluna 1 — ficha bibliográfica + stats */}
-          <motion.div variants={slideInLeft}>
-            {/* Stats compactos */}
-            <div className="grid grid-cols-2 gap-3 mb-10">
-              {stats.map((stat, i) => (
-                <div
-                  key={stat.label}
-                  className="bg-bg-card border border-border-subtle p-5 text-center hover:border-border-hover transition-colors"
-                >
-                  <AnimatedCounter
-                    value={stat.value}
-                    suffix={stat.suffix}
-                    delay={i * 0.1}
-                  />
-                  <p className="font-sans text-[0.6rem] font-medium text-text-dim tracking-[0.1em] uppercase mt-2 leading-snug">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Ficha bibliográfica de credenciais — label mono + valor */}
-            <div className="border-l border-accent/20 pl-6">
-              <p className="meta-caps-accent mb-5">Ficha</p>
-              <dl className="space-y-3.5">
-                {credentials.map((cred) => (
-                  <motion.div
+          {/* Coluna 1 — selo de atuação + caminho */}
+          <motion.div variants={slideInLeft} className="lg:sticky lg:top-28 lg:self-start">
+            {/* Selo de atuação — lista editorial ao invés de cards/dl */}
+            <div className="relative">
+              <p className="meta-caps-accent mb-6">Atuação</p>
+              <ul className="space-y-0">
+                {credentials.map((cred, i) => (
+                  <motion.li
                     key={cred.label}
-                    initial={{ opacity: 0, x: 16 }}
+                    initial={{ opacity: 0, x: 12 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className="grid grid-cols-[80px_1fr] gap-3 items-baseline"
+                    transition={{ duration: 0.5, delay: i * 0.06 }}
+                    className="group flex items-baseline gap-4 py-3.5 border-b border-border-subtle/70 first:border-t hover:border-accent/25 transition-colors"
                   >
-                    <dt className="font-mono text-[0.6rem] text-accent tracking-[0.18em] uppercase">
+                    <span className="text-accent text-[0.7rem] flex-shrink-0 leading-none">
+                      {cred.mark}
+                    </span>
+                    <span className="font-serif text-[0.95rem] text-text-bright leading-tight w-[110px] flex-shrink-0">
                       {cred.label}
-                    </dt>
-                    <dd className="text-[0.88rem] text-text leading-snug">
-                      {cred.value}
-                    </dd>
-                  </motion.div>
+                    </span>
+                    <span className="text-[0.85rem] text-text-dim leading-snug flex-1">
+                      {cred.detail}
+                    </span>
+                  </motion.li>
                 ))}
-              </dl>
+              </ul>
+            </div>
+
+            {/* Tagline grega abaixo do selo */}
+            <div className="mt-10 flex items-baseline gap-3">
+              <span className="block w-8 h-px bg-accent/30" />
+              <span
+                className="font-serif italic text-accent text-base tracking-wide"
+                style={{ opacity: 0.7 }}
+              >
+                γνῶθι σεαυτόν
+              </span>
             </div>
           </motion.div>
 
-          {/* Coluna 2 — narrativa com drop cap + citação */}
+          {/* Coluna 2 — narrativa com drop cap + citação + timeline */}
           <motion.div variants={slideInRight}>
             <p className="font-serif italic text-lg text-text-bright leading-[1.7] mb-6 drop-cap">
               Atendo em clínica desde o terceiro período da graduação. Entrei na
@@ -152,18 +109,12 @@ export default function About() {
               minha prática foi moldada por supervisão constante, pesquisa e
               centenas de horas de atendimento.
             </p>
-            <p className="text-[0.96rem] text-text leading-[1.85] mb-6">
-              Faço parte de uma pesquisa com dados robustos sobre a evolução de
-              psicoterapeutas ao longo do tempo — incluindo indicadores
-              concretos de competência clínica. Não é achismo: é evidência.
-            </p>
             <p className="text-[0.96rem] text-text leading-[1.85] mb-8">
               Conduzo grupos de estudo com prática deliberada para estudantes e
-              psicólogos que querem atender melhor. Já conduzi intervisões,
-              ministrei dezenas de horas de formação, e lidero quatro turmas que
-              somam mais de 120 profissionais. Também ministro grupos pela Liga
-              de Psicologia Analítica da UNICAP e já participei de plantão
-              psicológico.
+              psicólogos que querem atender melhor. Ministrei dezenas de horas
+              de formação, lidero turmas, conduzo intervisões e participo
+              de grupos pela Liga de Psicologia Analítica da UNICAP — sempre
+              voltando ao mesmo gesto: estudar, atender, supervisionar.
             </p>
 
             {/* Pull quote — destaque clássico */}
@@ -183,7 +134,6 @@ export default function About() {
             <div className="mt-10">
               <p className="meta-caps-accent mb-4">Caminho</p>
               <div className="relative">
-                {/* Linha base */}
                 <div className="absolute left-0 right-0 top-3 h-px bg-gradient-to-r from-accent/10 via-accent/30 to-accent/10" />
                 <ol className="grid grid-cols-4 gap-2 relative">
                   {milestones.map((m, i) => (
