@@ -179,7 +179,7 @@ export function ShootingStars({
           dx: Math.cos(rad) * travel,
           dy: Math.sin(rad) * travel,
           trailLen: 110 + Math.random() * 90,
-          duration: 1.1 + Math.random() * 0.7,
+          duration: 2.4 + Math.random() * 1.4,
           delay: 4 + i * 7 + Math.random() * 10,
           cycle: 16 + Math.random() * 14,
           color: Math.random() < 0.3 ? accentColor : color,
