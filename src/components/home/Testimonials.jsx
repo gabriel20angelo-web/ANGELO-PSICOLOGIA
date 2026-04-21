@@ -4,14 +4,7 @@ import { useRef, useState, useMemo } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { fadeUp, stagger } from '@/lib/constants';
 import SectionLabel from '@/components/SectionLabel';
-
-// Tags-arquétipo — colorem o card por tom do depoimento.
-const ARCHETYPE_TONE = {
-  Sombra:   { color: '#8B3A2E', bg: 'rgba(139,58,46,0.12)',  border: 'rgba(139,58,46,0.4)'  },
-  Anima:    { color: '#D4A853', bg: 'rgba(212,168,83,0.12)', border: 'rgba(212,168,83,0.4)' },
-  Self:     { color: '#B48C50', bg: 'rgba(180,140,80,0.14)', border: 'rgba(180,140,80,0.4)' },
-  Persona:  { color: '#E8DDD0', bg: 'rgba(232,221,208,0.08)',border: 'rgba(232,221,208,0.3)' },
-};
+import ArchetypeBadge, { ARCHETYPE_TONE } from '@/components/ui/ArchetypeBadge';
 
 const testimonials = [
   {
@@ -98,16 +91,7 @@ function TestimonialCard({ testimonial, index }) {
 
       <div className="flex items-center justify-between gap-4">
         <GoldRule />
-        <span
-          className="font-mono text-[0.55rem] tracking-[0.22em] uppercase px-2 py-1"
-          style={{
-            background: tone.bg,
-            color: tone.color,
-            border: `1px solid ${tone.border}`,
-          }}
-        >
-          {testimonial.archetype}
-        </span>
+        <ArchetypeBadge archetype={testimonial.archetype} />
       </div>
 
       <p className="text-[0.94rem] text-text leading-[1.85] relative z-10">

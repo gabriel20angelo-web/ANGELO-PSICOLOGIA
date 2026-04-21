@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PageHero from '@/components/ui/PageHero';
+import AlchemicalTimeline from '@/components/ui/AlchemicalTimeline';
 
 const STORAGE_KEY = 'angelo_admin_blog';
 const SERIES_STORAGE_KEY = 'angelo_admin_blog_series';
@@ -138,7 +139,14 @@ function StickyTOC({ headings }) {
   );
 }
 
-/* ====== Series Navigation ====== */
+/* ====== Series Navigation ======
+   - Se a série tiver 2-3 posts: lista textual.
+   - Se tiver exatamente 4 posts: vira AlchemicalTimeline
+     (Nigredo → Albedo → Citrinitas → Rubedo).
+   - Se tiver 5+: lista textual + indicador de progresso.
+*/
+const ALCHEMICAL_PHASES = ['nigredo', 'albedo', 'citrinitas', 'rubedo'];
+
 function SeriesNav({ currentPost, allPosts, seriesList, onNavigate }) {
   if (!currentPost.seriesId) return null;
   const series = seriesList.find((s) => s.id === currentPost.seriesId);
@@ -151,6 +159,31 @@ function SeriesNav({ currentPost, allPosts, seriesList, onNavigate }) {
   if (seriesPosts.length < 2) return null;
 
   const currentIdx = seriesPosts.findIndex((p) => p.id === currentPost.id);
+
+  // Caso especial: série de 4 posts → timeline alquímica
+  if (seriesPosts.length === 4) {
+    const stages = seriesPosts.map((p, i) => ({
+      phase: ALCHEMICAL_PHASES[i],
+      post: { title: p.title, slug: p.slug || p.id },
+      _ref: p,
+    }));
+
+    return (
+      <div className="bg-bg-card border border-border-subtle p-6 md:p-8 mb-10">
+        <p className="meta-caps-accent mb-1">Série: {series.name}</p>
+        <p className="font-serif italic text-text-dim text-[0.9rem] mb-2">
+          Parte {currentIdx + 1} de 4 — segue o ciclo da Grande Obra
+        </p>
+        <AlchemicalTimeline
+          stages={stages}
+          currentIdx={currentIdx}
+          title="Fases da série"
+          onSelectStage={(stage) => stage._ref && stage._ref.id !== currentPost.id && onNavigate(stage._ref)}
+        />
+      </div>
+    );
+  }
+
   const prev = currentIdx > 0 ? seriesPosts[currentIdx - 1] : null;
   const next = currentIdx < seriesPosts.length - 1 ? seriesPosts[currentIdx + 1] : null;
 

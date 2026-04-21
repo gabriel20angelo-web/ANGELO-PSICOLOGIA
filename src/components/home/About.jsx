@@ -3,6 +3,8 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import SectionLabel from '@/components/SectionLabel';
+import PullQuote from '@/components/ui/PullQuote';
+import DropCap from '@/components/ui/DropCap';
 import { fadeUp, stagger, slideInLeft, slideInRight } from '@/lib/constants';
 
 // Ficha de atuação — agora em formato de "selos" de identidade clínica.
@@ -103,12 +105,12 @@ export default function About() {
 
           {/* Coluna 2 — narrativa com drop cap + citação + timeline */}
           <motion.div variants={slideInRight}>
-            <p className="font-serif italic text-lg text-text-bright leading-[1.7] mb-6 drop-cap">
+            <DropCap className="font-serif italic text-lg text-text-bright leading-[1.7] mb-6">
               Atendo em clínica desde o terceiro período da graduação. Entrei na
               Associação Allos por um processo seletivo rigoroso e, desde então,
               minha prática foi moldada por supervisão constante, pesquisa e
               centenas de horas de atendimento.
-            </p>
+            </DropCap>
             <p className="text-[0.96rem] text-text leading-[1.85] mb-8">
               Conduzo grupos de estudo com prática deliberada para estudantes e
               psicólogos que querem atender melhor. Ministrei dezenas de horas
@@ -117,18 +119,9 @@ export default function About() {
               voltando ao mesmo gesto: estudar, atender, supervisionar.
             </p>
 
-            {/* Pull quote — destaque clássico */}
-            <div className="relative my-12 pl-8 border-l-2 border-accent/40">
-              <span className="absolute -left-3 -top-4 font-serif italic text-[3.5rem] leading-none text-accent/20 select-none">
-                &ldquo;
-              </span>
-              <p className="font-serif italic text-[1.2rem] text-text-bright leading-relaxed mb-3">
-                Quem olha para fora, sonha; quem olha para dentro, desperta.
-              </p>
-              <cite className="font-mono text-[0.65rem] text-accent tracking-[0.22em] uppercase not-italic">
-                — Carl Gustav Jung
-              </cite>
-            </div>
+            <PullQuote cite="Carl Gustav Jung">
+              Quem olha para fora, sonha; quem olha para dentro, desperta.
+            </PullQuote>
 
             {/* Timeline horizontal de marcos */}
             <div className="mt-10">

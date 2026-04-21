@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { img } from '@/lib/basepath';
+import CursorGlow from '@/components/ui/CursorGlow';
 
 function FloatingParticles() {
   const [particles, setParticles] = useState([]);
@@ -119,6 +120,9 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center px-6 md:px-12 overflow-hidden pt-28 md:pt-20 pb-20">
+      {/* Cursor glow contido no hero */}
+      <CursorGlow contained size={460} intensity={0.11} />
+
       {/* Ambient light effects */}
       <div className="ambient-glow absolute top-[12%] left-[35%] -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px]" />
       <div className="absolute bottom-0 left-0 w-full h-[300px] bg-gradient-to-t from-accent/[0.02] to-transparent pointer-events-none" />
